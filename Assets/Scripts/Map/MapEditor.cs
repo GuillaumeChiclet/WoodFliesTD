@@ -17,12 +17,13 @@ public class MapEditor : MonoBehaviour
     public Toggle waypointLinkToggle;
     public Toggle waypointStartToggle;
     public Toggle waypointEndToggle;
+    public Toggle resourceEditToggle;
     public TMP_Text height_text;
     public TMP_Text zoom_text;
     public TMP_InputField saveName_inputField;
     public TMP_Dropdown type_dropdown;
 
-
+    public GameObject woodPrefab;
 
     float currentCellHeight = 0.0f;
     float currentZoom = 10.0f;
@@ -129,6 +130,15 @@ public class MapEditor : MonoBehaviour
             {
                 map.data.waypointGraph.end = idx;
             }
+        }
+
+        if (resourceEditToggle.isOn && Input.GetMouseButtonDown(0))
+        {
+            Cell cell = map.data.cells.Get(x, y);
+            GameObject go = Instantiate(woodPrefab, MapCoordinates.CellToWorldCoords(x, y, cell.height), Quaternion.identity);
+            CellEntity cellEntity = go.GetComponent<CellEntity>();
+            cellEntity.cell = cell;
+            cell.ownedEntity = cellEntity;
         }
     }
 

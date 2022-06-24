@@ -124672,7 +124672,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2366057854225761083, guid: 7f2ef42a8304a3743a92da3d080f7cec, type: 3}
       propertyPath: m_Name
-      value: Map
+      value: MapManager
       objectReference: {fileID: 0}
     - target: {fileID: 2366057854225761086, guid: 7f2ef42a8304a3743a92da3d080f7cec, type: 3}
       propertyPath: m_RootOrder
@@ -124830,7 +124830,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4304439291771538050, guid: 496a981441f493d4ab32517f95c755c3, type: 3}
       propertyPath: m_Name
-      value: Save
+      value: SaveManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 496a981441f493d4ab32517f95c755c3, type: 3}

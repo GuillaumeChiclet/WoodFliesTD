@@ -10,5 +10,4 @@ public class Cell
     public float height = 0;
     public bool isBuildable = false;
     public CellEntity ownedEntity;
-    public GameObject ownedGameObject;
 }
