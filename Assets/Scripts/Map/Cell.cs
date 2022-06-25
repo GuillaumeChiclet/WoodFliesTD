@@ -9,5 +9,5 @@ public class Cell
     public int id = 0;
     public float height = 0;
     public bool isBuildable = false;
-    public CellEntity ownedEntity;
+    [System.NonSerialized] public CellEntity ownedEntity;
 }

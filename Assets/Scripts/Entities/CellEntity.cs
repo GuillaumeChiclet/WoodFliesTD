@@ -5,5 +5,5 @@ using UnityEngine;
 [System.Serializable]
 public class CellEntity : MonoBehaviour
 {
-    public Cell cell;
+    [System.NonSerialized] public Cell cell;
 }

@@ -137,6 +137,7 @@ public class MapEditor : MonoBehaviour
             Cell cell = map.data.cells.Get(x, y);
             GameObject go = Instantiate(woodPrefab, MapCoordinates.CellToWorldCoords(x, y, cell.height), Quaternion.identity);
             CellEntity cellEntity = go.GetComponent<CellEntity>();
+            map.data.cellEntities.Set(x, y, cellEntity);
             cellEntity.cell = cell;
             cell.ownedEntity = cellEntity;
         }

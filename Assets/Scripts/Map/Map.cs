@@ -8,6 +8,7 @@ public class MapData
     public int width;
     public int height;
     public Array2D<Cell> cells;
+    public Array2D<CellEntity> cellEntities;
     public WaypointGraph waypointGraph;
 }
 
@@ -46,15 +47,18 @@ public class Map : MonoBehaviour
 
     public void GenerateEmpty()
     {
-        ScriptableCell cellType = cellTypes[0];
-        data = new MapData();
-        data.cells = new Array2D<Cell>();
-        data.cells.Initialize(width, height);
         data.width = width;
         data.height = height;
+        data = new MapData();
+        data.cells = new Array2D<Cell>();
+        data.cellEntities = new Array2D<CellEntity>();
+        data.cells.Initialize(width, height);
+        data.cellEntities.Initialize(width, height);
+
         data.waypointGraph = new WaypointGraph();
         data.waypointGraph.waypoints = new List<Waypoint>();
 
+        ScriptableCell cellType = cellTypes[0];
         for (int j = 0; j < height; j++)
         {
             for (int i = 0; i < width; i++)
@@ -63,7 +67,6 @@ public class Map : MonoBehaviour
             }
             
         }
-        Debug.Log(" ");
     }
 
     

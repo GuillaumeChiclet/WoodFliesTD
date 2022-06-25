@@ -9,6 +9,7 @@ public class MapSaveData
     public int width;
     public int height;
     public List<Cell> cells;
+    public List<CellEntity> cellEntities;
     public WaypointGraph waypointGraph;
     public float cameraOrthoSize;
 }
@@ -40,6 +41,7 @@ public class SaveLoadManager : MonoBehaviour
         string json = File.ReadAllText(path);
         MapSaveData save = JsonUtility.FromJson<MapSaveData>(json);
         map.data.cells.CreateFromList(save.cells, save.width, save.height);
+        map.data.cellEntities.CreateFromList(save.cellEntities, save.width, save.height);
         map.data.width = save.width;
         map.data.height = save.height;
         map.data.waypointGraph = save.waypointGraph;
@@ -53,6 +55,7 @@ public class SaveLoadManager : MonoBehaviour
             width = map.data.width,
             height = map.data.height,
             cells = map.data.cells.GetAsList(),
+            cellEntities = map.data.cellEntities.GetAsList(),
             waypointGraph = map.data.waypointGraph,
             cameraOrthoSize = cam.orthographicSize
         };
