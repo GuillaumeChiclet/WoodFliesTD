@@ -331,6 +331,7 @@ GameObject:
   - component: {fileID: 4569959937597679339}
   - component: {fileID: 3961013822335811689}
   - component: {fileID: 2856808205032353804}
+  - component: {fileID: 1196783677}
   m_Layer: 5
   m_Name: Resources
   m_TagString: Untagged
@@ -398,6 +399,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1196783677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342729769376784969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aac5d1ad7535154eb0d71cdb81a91aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceList: {fileID: 11400000, guid: 1dfad0c76b709054e8bf324acc0c8af7, type: 2}
 --- !u!1 &369539050405708535
 GameObject:
   m_ObjectHideFlags: 0
@@ -4164,10 +4178,12 @@ MonoBehaviour:
   waypointLinkToggle: {fileID: 339165927}
   waypointStartToggle: {fileID: 926606888934772018}
   waypointEndToggle: {fileID: 7972390882206091310}
+  resourceEditToggle: {fileID: 8153456954791424053}
   height_text: {fileID: 5559794652030489298}
   zoom_text: {fileID: 5559794650949209611}
   saveName_inputField: {fileID: 5559794651818823902}
   type_dropdown: {fileID: 5559794652301121486}
+  woodPrefab: {fileID: 6641054608057439034, guid: 7c249b295853a9c4697e2c4489c14743, type: 3}
 --- !u!1 &5559794651036396838
 GameObject:
   m_ObjectHideFlags: 0

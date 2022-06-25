@@ -10,4 +10,11 @@ public class Cell
     public float height = 0;
     public bool isBuildable = false;
     public CellEntity ownedEntity;
+
+    public void SubscribeEntity(CellEntity entity) 
+    {
+        entity.cell = this;
+        ownedEntity = entity;
+        isBuildable = false;
+    }
 }

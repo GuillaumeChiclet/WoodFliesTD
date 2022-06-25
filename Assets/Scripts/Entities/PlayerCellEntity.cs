@@ -6,7 +6,7 @@ public class PlayerCellEntity : CellEntity, IInteractable
 {
     public void PrimarAction(GameObject caller)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Interacting with turret " + gameObject.name);
     }
 
     public void SecondAction(GameObject caller)

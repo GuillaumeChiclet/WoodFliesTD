@@ -11,6 +11,13 @@ public static class MapCoordinates
         x = (int)(position.x / unitSize + unitSize * 0.5f);
         y = (int)(position.z / unitSize + unitSize * 0.5f);
     }
+
+    public static void WorldToCellCoords(Vector3 position, ref Vector2Int coords)
+    {
+        coords.x = (int)(position.x / unitSize + unitSize * 0.5f);
+        coords.y = (int)(position.z / unitSize + unitSize * 0.5f);
+    }
+
     public static Vector2Int WorldToCellCoords(Vector3 position)
     {
         return new Vector2Int((int)(position.x / unitSize + unitSize * 0.5f), (int)(position.z / unitSize + unitSize * 0.5f));
