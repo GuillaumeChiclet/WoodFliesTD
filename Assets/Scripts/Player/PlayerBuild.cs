@@ -53,15 +53,17 @@ public class PlayerBuild : MonoBehaviour
         if (!controller.CurrentCellBelow.isBuildable)
             return;
 
-        Place();
+        PlaceShematic();
         EndBuild();
     }
 
-    void Place() 
+    void PlaceShematic() 
     {
         GameObject building = Instantiate(buildingPrefab);
         building.transform.position = MapCoordinates.CellToWorldCoords(controller.currentCellBelowGridPos);
         controller.CurrentCellBelow.SubscribeEntity(building.GetComponent<CellEntity>());
+        building.GetComponent<PlayerCellEntity>().SetAsShematic();
+
         Debug.Log(controller.CurrentCellBelow.ownedEntity.gameObject);
         EndBuild();
     }
@@ -80,9 +82,7 @@ public class PlayerBuild : MonoBehaviour
 
         Renderer[] renderers = buildPreview.GetComponentsInChildren<Renderer>();
         foreach (Renderer renderer in renderers) 
-        {
             renderer.material = controller.CurrentCellBelow.isBuildable ? buildable : nonBuildable;
-        }
 
         buildPreview.transform.position = MapCoordinates.CellToWorldCoords(controller.currentCellBelowGridPos);
     }

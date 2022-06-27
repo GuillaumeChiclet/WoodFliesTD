@@ -7,7 +7,8 @@ public class Resources : MonoBehaviour
     
     public ResourceHandler resourceList;
     public static ResourceHandler handler;
-    void Start() 
+
+    void Awake() 
     {
         handler = resourceList;
         resourceList.Initialize();

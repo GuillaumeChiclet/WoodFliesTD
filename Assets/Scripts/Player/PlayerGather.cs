@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerGather : MonoBehaviour
 {
@@ -9,6 +10,11 @@ public class PlayerGather : MonoBehaviour
     float timeGathered = 0f;
 
     [SerializeField] Image foreground;
+
+    [SerializeField] TMPro.TextMeshProUGUI woodDisplay;
+    [SerializeField] TMPro.TextMeshProUGUI stoneDisplay;
+
+    public List<int> resources = new List<int>();
     
     public void StartGathering(GatherableCellEntity resource) 
     {
@@ -23,6 +29,10 @@ public class PlayerGather : MonoBehaviour
     public void Start()
     {
         foreground.transform.parent.gameObject.SetActive(false);
+        foreach (ScriptableResource resource in Resources.handler.Resources) 
+        {
+            resources.Add(0);
+        }
     }
     IEnumerator Gather(GatherableCellEntity resource)
     {
@@ -37,11 +47,19 @@ public class PlayerGather : MonoBehaviour
         {
             Debug.Log("Gathered " + Resources.handler.IdToResource(resource.ResourceID));
             //Add resourceID To inventory
+            resources[resource.ResourceID]++;
             resource.Decrement();
+            RefreshUI();
         }
 
         timeGathered = 0f;
         isGathering = false;
         foreground.transform.parent.gameObject.SetActive(false);
+    }
+
+    void RefreshUI() 
+    {
+        woodDisplay.text  = resources[0].ToString();
+        stoneDisplay.text = resources[1].ToString();
     }
 }

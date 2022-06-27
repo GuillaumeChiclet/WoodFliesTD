@@ -246,6 +246,9 @@ MonoBehaviour:
     height: 0
     isBuildable: 0
     ownedEntity: {fileID: 0}
+  shematic: {fileID: 2100000, guid: 1e22660a741364b4f84360cb982b0bca, type: 2}
+  data: {fileID: 11400000, guid: 23cac5381e9f4f94b88c8f4c38e9fb58, type: 2}
+  turretPrefab: {fileID: 1317314797555807703}
 --- !u!1 &1317314797565696332
 GameObject:
   m_ObjectHideFlags: 0
