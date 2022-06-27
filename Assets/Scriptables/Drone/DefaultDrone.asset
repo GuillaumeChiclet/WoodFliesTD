@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a2439403f8ff1f4fabf95c6166c320c, type: 3}
+  m_Name: DefaultDrone
+  m_EditorClassIdentifier: 
+  speed: 5
+  dashpower: 100
+  dashCooldown: 0.25
+  dashMaxDuration: 0.25
+  extractionEfficiency: 1
+  craftingEfficiency: 1
+  itemSlot: 3
+  model: {fileID: 9045311367879793595, guid: d13721d56e6bb784399b7ce83cc2e29a, type: 3}
