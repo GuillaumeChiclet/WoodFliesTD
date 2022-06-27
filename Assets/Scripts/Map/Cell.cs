@@ -14,6 +14,8 @@ public class Cell
     public string ownedEntityData = "";
     [System.NonSerialized] public CellEntity ownedEntity = null;
 
+    public bool canBuild => isBuildable && !ownedEntity;
+
     public void CleanCellEntity()
     {
         ownedEntity = null;
@@ -42,5 +44,12 @@ public class Cell
         {
             CleanCellEntity();
         }
+    }
+    
+    public void SubscribeEntity(CellEntity entity) 
+    {
+        entity.cell = this;
+        ownedEntity = entity;
+        isBuildable = false;
     }
 }

@@ -141,6 +141,33 @@ public class Map : MonoBehaviour
         return false;
     }
 
+    public bool ReplaceCellEntity(Vector2Int coords, string entityName, out CellEntity cellEntity) 
+    {
+        return ReplaceCellEntity(coords.x, coords.y, entityName, out cellEntity);
+    }
+
+    public bool ReplaceCellEntity(int i, int j, string entityName, out CellEntity cellEntity) 
+    {
+        if (data.cells.TryGet(i, j, out Cell cell))
+        {
+            if (assets.TryGet(entityName, out GameObject go)) // If we found appropriate Prefab
+            {
+                GameObject prefab = Instantiate(go, MapCoordinates.CellToWorldCoords(i, j, cell.height), Quaternion.identity, transform);
+                cellEntity = prefab.GetComponent<CellEntity>();
+                
+                if (cell.ownedEntity)
+                    TryDestroyCellEntity(i, j);
+                
+                cellEntity.cell = cell;
+                cell.ownedEntity = cellEntity;
+                cell.ownedEntityName = entityName;
+                return true;
+            }
+        }
+        cellEntity = null;
+        return false;
+    }
+
     public bool TryDestroyCellEntity(Vector2Int coords)
     {
         return TryDestroyCellEntity(coords.x, coords.y);

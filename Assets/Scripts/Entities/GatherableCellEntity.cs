@@ -13,7 +13,7 @@ public class GatherableCellEntitySaveData
 }
 
 [System.Serializable]
-public class GatherableCellEntity : CellEntity, IInteractable
+public class GatherableCellEntity : CellEntity
 {
     [SerializeField] ScriptableResource resource;
 
@@ -26,13 +26,13 @@ public class GatherableCellEntity : CellEntity, IInteractable
     public bool Empty     => resourceLeft <= 0;
     public int ResourceID => resource.ID;
     // Gather resources
-    public void PrimarAction(GameObject caller)
+    public override void PrimarAction(GameObject caller)
     {
         caller.GetComponent<PlayerGather>()?.StartGathering(this);
     }
 
     // Any other action
-    public void SecondAction(GameObject caller)
+    public override void SecondAction(GameObject caller)
     {
         throw new System.NotImplementedException();
     }

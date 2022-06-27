@@ -16,5 +16,7 @@ public class ResourceHandler : ScriptableObject
     {
         return resources[id];
     }
+
+    public List<ScriptableResource> Resources => resources;
 }
 

@@ -30,8 +30,11 @@ public class PlayerController : MonoBehaviour
 
     Vector3 forceScale = new Vector3(1, 0, 1);
 
-    Map map = null;
+    public Map map = null;
     Cell currentCellBelow = null;
+    public Vector2Int currentCellBelowGridPos;
+
+    public Cell CurrentCellBelow => currentCellBelow;
     Vector3 hitPoint;
 
     private void Awake()
@@ -71,6 +74,8 @@ public class PlayerController : MonoBehaviour
         {
             hitPoint = hit.point;
             map.TryGetCellFromWorldPos(hitPoint, out currentCellBelow);
+            int x = 0, y = 0;
+            MapCoordinates.WorldToCellCoords(hitPoint, ref currentCellBelowGridPos);
         }
     }
 

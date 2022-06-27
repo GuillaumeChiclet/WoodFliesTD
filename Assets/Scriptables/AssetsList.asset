@@ -15,3 +15,7 @@ MonoBehaviour:
   resourcesPrefabs:
   - {fileID: 6641054608057439034, guid: 7c249b295853a9c4697e2c4489c14743, type: 3}
   - {fileID: 3670852084985614270, guid: 59a2c18dbe1a4ca498375f8676bf8be4, type: 3}
+  playerPrefabs:
+  - {fileID: 5083835594583267269, guid: e9087c55b10e4f54aac6f1afbb0c4ba9, type: 3}
+  - {fileID: 1317314797555807703, guid: 4376ef92e7f87d84fbc10e19aab9dad6, type: 3}
+  buildingPrefabs: []
