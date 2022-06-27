@@ -1,0 +1,54 @@
+{
+    "name": "Editor",
+    "maps": [
+        {
+            "name": "Edition",
+            "id": "167a757b-b282-410d-a357-d44ca4fb0d71",
+            "actions": [
+                {
+                    "name": "Activate",
+                    "type": "Button",
+                    "id": "b0264cc4-f008-4fd7-bd66-eb7479fea7c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftButton",
+                    "type": "Button",
+                    "id": "12864ab6-5483-41bd-9fd8-cb48d7368c93",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "417bf2ae-531b-45c0-8af3-785eaebd25a0",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Activate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a41b83b-c8c4-4a0c-b95d-aaeb876ad0d5",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

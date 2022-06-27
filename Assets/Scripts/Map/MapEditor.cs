@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using TMPro;
 
 
@@ -30,7 +31,9 @@ public class MapEditor : MonoBehaviour
     Map map;
     AssetsManager assets;
     SaveLoadManager saveLoadManager;
+
     bool panelOpen = true;
+    bool isMouseDown = false;
 
     Vector2Int firstClic;
     Vector2Int secondClic;
@@ -70,88 +73,15 @@ public class MapEditor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Open or Close EditorPanel
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if(isMouseDown && GetHoveredCellPosition(out Vector2Int cellCoord))
         {
-            panelOpen = !panelOpen;
-            editPanel.SetActive(panelOpen);
-        }
-
-        if (panelOpen)
-            return;
-
-
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        bool touch = Physics.Raycast(ray, out RaycastHit hit, 5000, terrainLayerMask, QueryTriggerInteraction.Ignore);
-
-        int x = 0, y = 0;
-        if (touch && hit.collider.gameObject.layer != LayerMask.NameToLayer("UI"))
-        {
-            MapCoordinates.WorldToCellCoords(hit.point - ray.direction * 0.05f, ref x, ref y);
-        }
-
-
-        // Raycast to EDIT
-        if (editToggle.isOn && Input.GetMouseButton(0))
-        {
-            map.SetCellFromID(x, y, type_dropdown.value, currentCellHeight);
-            map.UpdateMesh();
-        }
-
-        if (waypointToggle.isOn && Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("X: " + x.ToString() + " - Y: " + y.ToString());
-            Vector2Int coords = new Vector2Int(x, y);
-            if (map.data.waypointGraph.HasWaypoint(coords))
-                map.data.waypointGraph.RemoveWaypoint(coords);
-            else
-                map.data.waypointGraph.AddWaypoint(coords);
-        }
-        
-        if (waypointLinkToggle.isOn)
-        {
-            if (Input.GetMouseButtonDown(0))
+            if (editToggle.isOn)
             {
-                Debug.Log("X: " + x.ToString() + " - Y: " + y.ToString());
-                firstClic = new Vector2Int(x, y);
+                map.SetCellFromID(cellCoord.x, cellCoord.y, type_dropdown.value, currentCellHeight);
+                map.UpdateMesh();
             }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                Debug.Log("X: " + x.ToString() + " - Y: " + y.ToString());
-                secondClic = new Vector2Int(x, y);
-                map.data.waypointGraph.LinkOrUnlinkWaypoints(firstClic, secondClic);
-            }
-        }
-
-        if (waypointStartToggle.isOn && Input.GetMouseButtonDown(0))
-        {
-            Waypoint wp = null;
-            int idx = 0;
-            if (map.data.waypointGraph.GetWaypoint(new Vector2Int(x, y), ref wp, ref idx))
-            {
-                map.data.waypointGraph.start = idx;
-            }
-        }
-
-        if (waypointEndToggle.isOn && Input.GetMouseButtonDown(0))
-        {
-            Waypoint wp = null;
-            int idx = 0;
-            if (map.data.waypointGraph.GetWaypoint(new Vector2Int(x, y), ref wp, ref idx))
-            {
-                map.data.waypointGraph.end = idx;
-            }
-        }
-
-        if (resourceEditToggle.isOn && Input.GetMouseButtonDown(0))
-        {
-            if (!map.data.cells.TryGet(x, y, out Cell cell))
-                return;
-
-            map.TrySpawnCellEntity(x, y, resource_dropdown.captionText.text, out CellEntity entity);
         }
     }
-
 
     public void SetCurrentType(int value)
     {
@@ -215,5 +145,89 @@ public class MapEditor : MonoBehaviour
             }
         }
     }
+    public void OnActivate(InputAction.CallbackContext context) => editPanel.SetActive(!editPanel.activeSelf);
 
+    public void OnMouseLeftButton(InputAction.CallbackContext context)
+    {
+        if (GetHoveredCellPosition(out Vector2Int cellCoord))
+        {
+            if (context.ReadValueAsButton())
+            {
+                isMouseDown = true;
+
+                if (waypointToggle.isOn)
+                {
+                    if (map.data.waypointGraph.HasWaypoint(cellCoord))
+                        map.data.waypointGraph.RemoveWaypoint(cellCoord);
+                    else
+                        map.data.waypointGraph.AddWaypoint(cellCoord);
+                }
+
+                if (waypointLinkToggle.isOn)
+                {
+                    firstClic = cellCoord;
+                }
+
+                if (waypointStartToggle.isOn)
+                {
+                    Waypoint wp = null;
+                    int idx = 0;
+                    if (map.data.waypointGraph.GetWaypoint(cellCoord, ref wp, ref idx))
+                    {
+                        map.data.waypointGraph.start = idx;
+                    }
+                }
+
+                if (waypointEndToggle.isOn)
+                {
+                    Waypoint wp = null;
+                    int idx = 0;
+                    if (map.data.waypointGraph.GetWaypoint(cellCoord, ref wp, ref idx))
+                    {
+                        map.data.waypointGraph.end = idx;
+                    }
+                }
+
+                if (resourceEditToggle.isOn)
+                {
+                    if (!map.data.cells.TryGet(cellCoord.x, cellCoord.y, out Cell cell))
+                        return;
+
+                    map.TrySpawnCellEntity(cellCoord.x, cellCoord.y, resource_dropdown.captionText.text, out CellEntity entity);
+                }
+            }
+            else
+            {
+                isMouseDown = false;
+
+                if (waypointLinkToggle.isOn)
+                {
+                    secondClic = cellCoord;
+                    map.data.waypointGraph.LinkOrUnlinkWaypoints(firstClic, secondClic);
+                }
+            }
+        }
+    }
+
+    private bool GetHoveredCellPosition(out Vector2Int cellCoord)
+    {
+        cellCoord = new Vector2Int(-1, -1);
+        Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        bool touch = Physics.Raycast(ray, out RaycastHit hit, 5000, terrainLayerMask, QueryTriggerInteraction.Ignore);
+
+        int x = 0, y = 0;
+        if (touch && hit.collider.gameObject.layer != LayerMask.NameToLayer("UI"))
+        {
+            MapCoordinates.WorldToCellCoords(hit.point - ray.direction * 0.05f, ref x, ref y);
+
+            cellCoord.x = x;
+            cellCoord.y = y;
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
