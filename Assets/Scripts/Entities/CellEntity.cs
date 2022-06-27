@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class CellEntity : MonoBehaviour
+public class CellEntity : MonoBehaviour, ISerializable
 {
-    [System.NonSerialized] public Cell cell;
+    public Cell cell = null;
+    public virtual string ToJson() { return ""; }
+    public virtual void FromJson(string json) { }
 }

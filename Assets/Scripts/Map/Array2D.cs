@@ -30,17 +30,35 @@ public class Array2D<T> where T : new()
         height = 0;
     }
 
-    public T Get(int x, int y)
+    public bool TryGet(Vector2Int coords, out T value)
     {
-        if (x < 0 || x >= width || y < 0 || y >= height)
-            return new T();
-
-        return list[x * height + y];
+        return TryGet(coords.x, coords.y, out value);
     }
 
-    public void Set(int x, int y, T value)
+    public bool TryGet(int x, int y, out T value)
     {
+        if (x < 0 || x >= width || y < 0 || y >= height)
+        {
+            value = default(T);
+            return false;
+        }
+
+        value = list[x * height + y];
+        return true;
+    }
+
+    public bool TrySet(Vector2Int coords, T value)
+    {
+        return TrySet(coords.x, coords.y, value);
+    }
+
+    public bool TrySet(int x, int y, T value)
+    {
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            return false;
+
         list[x * height + y] = value;
+        return true;
     }
 
     public int GetWidth()

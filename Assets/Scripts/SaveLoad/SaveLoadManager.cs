@@ -4,20 +4,26 @@ using UnityEngine;
 using System.IO;
 
 [System.Serializable]
-public class MapSaveData
+public class CameraSaveData
 {
-    public int width;
-    public int height;
-    public List<Cell> cells;
-    public List<CellEntity> cellEntities;
-    public WaypointGraph waypointGraph;
-    public float cameraOrthoSize;
+    public float orthographicSize;
+}
+
+
+[System.Serializable]
+public class GameSaveData
+{
+    public MapSaveData mapSaveData;
+    public CameraSaveData camSaveData;
+    // Players data
+    // Game round data
 }
 
 public class SaveLoadManager : MonoBehaviour
 {
     Map map;
     Camera cam;
+    AssetsManager assets;
 
     private void Awake()
     {
@@ -25,7 +31,13 @@ public class SaveLoadManager : MonoBehaviour
         GameObject go = GameObject.Find("MapManager");
         if (!go) return;
         map = go.GetComponent<Map>();
-        map.GenerateEmpty();
+        map.Initialize();
+
+        go = null;
+        go = GameObject.Find("AssetsManager");
+        if (!go) return;
+        assets = go.GetComponent<AssetsManager>();
+        assets.Initialize();
 
         Load("Level_00");
     }
@@ -39,27 +51,22 @@ public class SaveLoadManager : MonoBehaviour
         Debug.Log("Loading " + name);
 
         string json = File.ReadAllText(path);
-        MapSaveData save = JsonUtility.FromJson<MapSaveData>(json);
-        map.data.cells.CreateFromList(save.cells, save.width, save.height);
-        map.data.cellEntities.CreateFromList(save.cellEntities, save.width, save.height);
-        map.data.width = save.width;
-        map.data.height = save.height;
-        map.data.waypointGraph = save.waypointGraph;
-        cam.orthographicSize = save.cameraOrthoSize;
+        GameSaveData gameSaveData = JsonUtility.FromJson<GameSaveData>(json);
+
+        // Load everything back to same state
+        map.LoadMapSaveData(gameSaveData.mapSaveData);
+        cam.orthographicSize = gameSaveData.camSaveData.orthographicSize;
     }
 
     public void Save(string name)
     {
-        MapSaveData save = new MapSaveData
+        GameSaveData gameSaveData = new GameSaveData
         {
-            width = map.data.width,
-            height = map.data.height,
-            cells = map.data.cells.GetAsList(),
-            cellEntities = map.data.cellEntities.GetAsList(),
-            waypointGraph = map.data.waypointGraph,
-            cameraOrthoSize = cam.orthographicSize
+            mapSaveData = map.GetMapSaveData(),
+            camSaveData = new CameraSaveData { orthographicSize = cam.orthographicSize }
         };
-        string json = JsonUtility.ToJson(save, true);
+
+        string json = JsonUtility.ToJson(gameSaveData, true);
         File.WriteAllText(Application.persistentDataPath + "/" + name + ".json", json);
     }
 }

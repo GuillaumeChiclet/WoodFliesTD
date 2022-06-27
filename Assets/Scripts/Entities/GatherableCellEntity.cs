@@ -2,10 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SerializeField]
+public class GatherableCellEntitySaveData
+{
+    public float respawnTime = 10f;
+    public float gatheringTime = 2f;
+
+    public int resourceField = 50;
+    public int resourceLeft = 0;
+}
+
 [System.Serializable]
 public class GatherableCellEntity : CellEntity, IInteractable
 {
-   
     [SerializeField] ScriptableResource resource;
 
     public float respawnTime   = 10f;
@@ -32,8 +41,8 @@ public class GatherableCellEntity : CellEntity, IInteractable
     private void Start()
     {
         resourceLeft = resourceField;
-        cell = GameObject.Find("MapManager").GetComponent<Map>().GetCellFromWorldPos(transform.position);
-        cell.ownedEntity = this;
+        //GameObject.Find("MapManager").GetComponent<Map>().TryGetCellFromWorldPos(transform.position, out cell);
+        //cell.ownedEntity = this;
     }
 
     public void Decrement() 
@@ -43,15 +52,29 @@ public class GatherableCellEntity : CellEntity, IInteractable
             StartRespawnPhase();
     }
 
-    IEnumerator RespawnPhase() 
+    IEnumerator RespawnPhase()
     {
         float elapsedTime = 0f;
-        while (elapsedTime >= respawnTime) 
+        while (elapsedTime >= respawnTime)
         {
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         resourceLeft = resourceField;
-    }        
+    }
+
+    
+
+    public override string ToJson()
+    {
+        GatherableCellEntitySaveData save = new GatherableCellEntitySaveData
+        {
+            gatheringTime = gatheringTime,
+            resourceField = resourceField,
+            resourceLeft = resourceLeft,
+            respawnTime = respawnTime
+        };
+        return JsonUtility.ToJson(save);
+    }
 }

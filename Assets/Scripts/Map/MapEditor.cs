@@ -18,17 +18,17 @@ public class MapEditor : MonoBehaviour
     public Toggle waypointStartToggle;
     public Toggle waypointEndToggle;
     public Toggle resourceEditToggle;
+    public TMP_Dropdown resource_dropdown;
     public TMP_Text height_text;
     public TMP_Text zoom_text;
     public TMP_InputField saveName_inputField;
     public TMP_Dropdown type_dropdown;
 
-    public GameObject woodPrefab;
-
     float currentCellHeight = 0.0f;
     float currentZoom = 10.0f;
 
     Map map;
+    AssetsManager assets;
     SaveLoadManager saveLoadManager;
     bool panelOpen = true;
 
@@ -36,8 +36,11 @@ public class MapEditor : MonoBehaviour
     Vector2Int secondClic;
 
 
-    void Awake()
+    void Start()
     {
+        GameObject goa = GameObject.Find("AssetsManager");
+        if (goa) assets = goa.GetComponent<AssetsManager>();
+
         GameObject gos = GameObject.Find("SaveManager");
         if (gos) saveLoadManager = gos.GetComponent<SaveLoadManager>();
 
@@ -52,6 +55,14 @@ public class MapEditor : MonoBehaviour
             names.Add(map.cellTypes[i].typeName);
         }
         type_dropdown.AddOptions(names);
+
+
+        resource_dropdown.ClearOptions();
+        string[] tmp = new string[assets.resourceEntityPrefabs.Count];
+        assets.resourceEntityPrefabs.Keys.CopyTo(tmp, 0);
+        List<string> rNames = new List<string>(tmp);
+        resource_dropdown.AddOptions(rNames);
+
         currentCellHeight = map.cellTypes[type_dropdown.value].defaultHeight;
         height_text.text = (currentCellHeight.ToString());
     }
@@ -134,12 +145,10 @@ public class MapEditor : MonoBehaviour
 
         if (resourceEditToggle.isOn && Input.GetMouseButtonDown(0))
         {
-            Cell cell = map.data.cells.Get(x, y);
-            GameObject go = Instantiate(woodPrefab, MapCoordinates.CellToWorldCoords(x, y, cell.height), Quaternion.identity);
-            CellEntity cellEntity = go.GetComponent<CellEntity>();
-            map.data.cellEntities.Set(x, y, cellEntity);
-            cellEntity.cell = cell;
-            cell.ownedEntity = cellEntity;
+            if (!map.data.cells.TryGet(x, y, out Cell cell))
+                return;
+
+            map.TrySpawnCellEntity(x, y, resource_dropdown.captionText.text, out CellEntity entity);
         }
     }
 
@@ -184,7 +193,7 @@ public class MapEditor : MonoBehaviour
     }
     public void ResetMap()
     {
-        map.GenerateEmpty();
+        map.ClearToDefault();
         map.UpdateMesh();
     }
 
@@ -196,7 +205,7 @@ public class MapEditor : MonoBehaviour
         for (int i = 0; i < map.data.waypointGraph.waypoints.Count; i++)
         {
             Waypoint wp = map.data.waypointGraph.waypoints[i];
-            Cell cell = map.data.cells.Get(wp.cellCoords.x, wp.cellCoords.y);
+            map.data.cells.TryGet(wp.cellCoords.x, wp.cellCoords.y, out Cell cell);
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(MapCoordinates.CellToWorldCoords(wp.cellCoords, cell.height), 0.1f);
             for (int j = 0; j < wp.nextIndices.Count; j++)

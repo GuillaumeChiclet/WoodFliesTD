@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
         if (touch)
         {
             hitPoint = hit.point;
-            currentCellBelow = map.GetCellFromWorldPos(hitPoint);
+            map.TryGetCellFromWorldPos(hitPoint, out currentCellBelow);
         }
     }
 

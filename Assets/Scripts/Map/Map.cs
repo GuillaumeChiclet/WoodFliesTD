@@ -2,13 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [System.Serializable]
+public class MapSaveData
+{
+    public int width;
+    public int height;
+    public List<Cell> cells;
+    public WaypointGraph waypointGraph;
+}
+
 public class MapData
 {
     public int width;
     public int height;
     public Array2D<Cell> cells;
-    public Array2D<CellEntity> cellEntities;
     public WaypointGraph waypointGraph;
 }
 
@@ -26,10 +34,12 @@ public class Map : MonoBehaviour
     [HideInInspector] public MapData data;
 
     MapDisplay display;
+    AssetsManager assets;
 
     private void Awake()
     {
         display = GetComponent<MapDisplay>();
+        
     }
 
     private void Start()
@@ -45,19 +55,28 @@ public class Map : MonoBehaviour
         display.DrawMesh(MeshGenerator.CreateMeshFromCells(ref data.cells, cellTypes.Length, MapCoordinates.unitSize), materials);
     }
 
-    public void GenerateEmpty()
+    public void Initialize()
     {
+        GameObject go = GameObject.Find("AssetsManager");
+        if (go)
+            assets = go.GetComponent<AssetsManager>();
+
+        data = new MapData();
+
         data.width = width;
         data.height = height;
-        data = new MapData();
-        data.cells = new Array2D<Cell>();
-        data.cellEntities = new Array2D<CellEntity>();
-        data.cells.Initialize(width, height);
-        data.cellEntities.Initialize(width, height);
 
+        data.cells = new Array2D<Cell>();
+        data.cells.Initialize(width, height);
+        
         data.waypointGraph = new WaypointGraph();
         data.waypointGraph.waypoints = new List<Waypoint>();
 
+        ClearToDefault();
+    }
+
+    public void ClearToDefault()
+    {
         ScriptableCell cellType = cellTypes[0];
         for (int j = 0; j < height; j++)
         {
@@ -69,13 +88,20 @@ public class Map : MonoBehaviour
         }
     }
 
-    
+    public bool TryGetCellEntity(Vector2Int coords, ref CellEntity cellEntity)
+    {
+        if (data.cells.TryGet(coords, out Cell cell))
+        {
+            return cell.TryGetCellEntity(out cellEntity);
+        }
+        return false;
+    }
 
-    public Cell GetCellFromWorldPos(Vector3 position)
+    public bool TryGetCellFromWorldPos(Vector3 position, out Cell cell)
     {
         int x = 0, y = 0;
         MapCoordinates.WorldToCellCoords(position, ref x, ref y);
-        return data.cells.Get(x, y);
+        return data.cells.TryGet(x, y, out cell);
     }
 
     public void SetCellFromID(int i, int j, int id, float height = -1)
@@ -86,6 +112,104 @@ public class Map : MonoBehaviour
 
     public void SetCell(int i, int j, Cell cell)
     {
-        data.cells.Set(i, j, cell);
+        data.cells.TrySet(i, j, cell);
+    }
+
+    public bool TrySpawnCellEntity(Vector2Int coords, string entityName, out CellEntity cellEntity)
+    {
+        return TrySpawnCellEntity(coords.x, coords.y, entityName, out cellEntity);
+    }
+    public bool TrySpawnCellEntity(int i, int j, string entityName, out CellEntity cellEntity)
+    {
+        if (data.cells.TryGet(i, j, out Cell cell))
+        {
+            if (cell.ownedEntity == null) // If no entity on the cell
+            {
+                if (assets.TryGet(entityName, out GameObject go)) // If we found appropriate Prefab
+                {
+                    GameObject prefab = Instantiate(go, MapCoordinates.CellToWorldCoords(i, j, cell.height), Quaternion.identity, transform);
+                    cellEntity = prefab.GetComponent<CellEntity>();
+
+                    cellEntity.cell = cell;
+                    cell.ownedEntity = cellEntity;
+                    cell.ownedEntityName = entityName;
+                    return true;
+                }
+            }
+        }
+        cellEntity = null;
+        return false;
+    }
+
+    public bool TryDestroyCellEntity(Vector2Int coords)
+    {
+        return TryDestroyCellEntity(coords.x, coords.y);
+    }
+
+    public bool TryDestroyCellEntity(int i, int j)
+    {
+        if (data.cells.TryGet(i, j, out Cell cell))
+        {
+            CellEntity entity = cell.ownedEntity;
+            if (entity)
+            {
+                cell.CleanCellEntity();
+                Destroy(entity.gameObject);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void LoadMapSaveData(MapSaveData mapSaveData)
+    {
+        data.width = mapSaveData.width;
+        data.height = mapSaveData.height;
+        data.cells.CreateFromList(mapSaveData.cells, mapSaveData.width, mapSaveData.height);
+        data.waypointGraph = mapSaveData.waypointGraph;
+
+        for (int i = 0; i < data.width; i++)
+        {
+            for (int j = 0; j < data.height; j++)
+            {
+                if (data.cells.TryGet(i, j, out Cell cell))
+                {
+                    if (cell.ownedEntityName != "")
+                    {
+                        if (assets.TryGet(cell.ownedEntityName, out GameObject go))
+                        {
+                            GameObject prefab = Instantiate(go, MapCoordinates.CellToWorldCoords(i, j, cell.height), Quaternion.identity, transform);
+                            CellEntity entity = prefab.GetComponent<CellEntity>();
+                            entity.FromJson(cell.ownedEntityData);
+                            entity.cell = cell;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public MapSaveData GetMapSaveData()
+    {
+        for (int i = 0; i < data.width; i++)
+        {
+            for (int j = 0; j < data.height; j++)
+            {
+                if (data.cells.TryGet(i, j, out Cell cell))
+                {
+                    cell.Save();
+                }
+            }
+        }
+
+        return new MapSaveData
+        {
+            width = data.width,
+            height = data.height,
+            cells = data.cells.GetAsList(),
+            waypointGraph = data.waypointGraph,
+        };
+        
     }
 }

@@ -746,7 +746,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1933804362130474452
 GameObject:
   m_ObjectHideFlags: 0
@@ -4164,10 +4164,12 @@ MonoBehaviour:
   waypointLinkToggle: {fileID: 339165927}
   waypointStartToggle: {fileID: 926606888934772018}
   waypointEndToggle: {fileID: 7972390882206091310}
+  resourceEditToggle: {fileID: 8153456954791424053}
   height_text: {fileID: 5559794652030489298}
   zoom_text: {fileID: 5559794650949209611}
   saveName_inputField: {fileID: 5559794651818823902}
   type_dropdown: {fileID: 5559794652301121486}
+  woodPrefab: {fileID: 6641054608057439034, guid: 7c249b295853a9c4697e2c4489c14743, type: 3}
 --- !u!1 &5559794651036396838
 GameObject:
   m_ObjectHideFlags: 0

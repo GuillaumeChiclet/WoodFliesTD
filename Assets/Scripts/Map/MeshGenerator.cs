@@ -23,7 +23,8 @@ public static class MeshGenerator
         {
             for (int j = 0; j <= columns; j++)
             {
-                Cell cell = cells.Get(i, j);
+                if (!cells.TryGet(i, j, out Cell cell))
+                    continue;
 
                 AddQuad(Matrix4x4.TRS(
                     new Vector3(i * unitSize, cell.height, j * unitSize),
@@ -32,9 +33,9 @@ public static class MeshGenerator
                     ), ref newVertices, ref newUVs, ref triangles[cell.id]);
 
                 if (i - 1 < 0) { }
-                else if (cells.Get(i - 1, j).height < cell.height)
+                else if (cells.TryGet(i - 1, j, out Cell outCell) && outCell.height < cell.height)
                 {
-                    float height = Mathf.Abs(cell.height - cells.Get(i - 1, j).height);
+                    float height = Mathf.Abs(cell.height - outCell.height);
                     AddQuad(Matrix4x4.TRS(
                     new Vector3((i - .5f) * unitSize, cell.height - height * 0.5f, j * unitSize),
                     Quaternion.LookRotation(Vector3.left),
@@ -43,9 +44,9 @@ public static class MeshGenerator
                 }
 
                 if (j + 1 > columns) { }
-                else if (cells.Get(i, j + 1).height < cell.height)
+                else if (cells.TryGet(i, j + 1, out Cell outCell) && outCell.height < cell.height)
                 {
-                    float height = Mathf.Abs(cell.height - cells.Get(i, j + 1).height);
+                    float height = Mathf.Abs(cell.height - outCell.height);
                     AddQuad(Matrix4x4.TRS(
                     new Vector3(i * unitSize, cell.height - height * 0.5f, (j + .5f) * unitSize),
                     Quaternion.LookRotation(Vector3.forward),
@@ -54,9 +55,9 @@ public static class MeshGenerator
                 }
 
                 if (j - 1 < 0) { }
-                else if (cells.Get(i, j - 1).height < cell.height)
+                else if (cells.TryGet(i, j - 1, out Cell outCell) && outCell.height < cell.height)
                 {
-                    float height = Mathf.Abs(cell.height - cells.Get(i, j - 1).height);
+                    float height = Mathf.Abs(cell.height - outCell.height);
                     AddQuad(Matrix4x4.TRS(
                     new Vector3(i * unitSize, cell.height - height * 0.5f, (j - .5f) * unitSize),
                     Quaternion.LookRotation(Vector3.back),
@@ -65,9 +66,9 @@ public static class MeshGenerator
                 }
 
                 if (i + 1 > rows) { }
-                else if (cells.Get(i + 1, j).height < cell.height)
+                else if (cells.TryGet(i + 1, j, out Cell outCell) && outCell.height < cell.height)
                 {
-                    float height = Mathf.Abs(cell.height - cells.Get(i + 1, j).height);
+                    float height = Mathf.Abs(cell.height - outCell.height);
                     AddQuad(Matrix4x4.TRS(
                     new Vector3((i + .5f) * unitSize, cell.height - height * 0.5f, j * unitSize),
                     Quaternion.LookRotation(Vector3.right),
