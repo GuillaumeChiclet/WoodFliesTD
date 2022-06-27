@@ -82,9 +82,9 @@ public class Map : MonoBehaviour
         {
             for (int i = 0; i < width; i++)
             {
-                SetCell(i, j, new Cell { id = 0, height = cellType.defaultHeight, isBuildable = cellType.isBuildable });
+                TryDestroyCellEntity(i, j);
+                data.cells.TrySet(i, j, new Cell { id = 0, height = cellType.defaultHeight, isBuildable = cellType.isBuildable });
             }
-            
         }
     }
 
@@ -107,12 +107,12 @@ public class Map : MonoBehaviour
     public void SetCellFromID(int i, int j, int id, float height = -1)
     {
         float h = height >= 0.0f ? height : cellTypes[id].defaultHeight;
-        SetCell(i, j, new Cell { id = id, height = h, isBuildable = cellTypes[id].isBuildable });
-    }
-
-    public void SetCell(int i, int j, Cell cell)
-    {
-        data.cells.TrySet(i, j, cell);
+        if (data.cells.TryGet(i, j, out Cell cell))
+        {
+            cell.height = h;
+            cell.id = id;
+            cell.isBuildable = cellTypes[id].isBuildable;
+        }
     }
 
     public bool TrySpawnCellEntity(Vector2Int coords, string entityName, out CellEntity cellEntity)
@@ -150,6 +150,9 @@ public class Map : MonoBehaviour
     {
         if (data.cells.TryGet(i, j, out Cell cell))
         {
+            if (cell == null)
+                return false;
+
             CellEntity entity = cell.ownedEntity;
             if (entity)
             {
@@ -183,6 +186,7 @@ public class Map : MonoBehaviour
                             CellEntity entity = prefab.GetComponent<CellEntity>();
                             entity.FromJson(cell.ownedEntityData);
                             entity.cell = cell;
+                            cell.ownedEntity = entity;
                         }
                     }
                 }
