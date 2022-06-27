@@ -315,6 +315,7 @@ GameObject:
   - component: {fileID: 2485145182681316961}
   - component: {fileID: 2485145181930936751}
   - component: {fileID: 5267556284120553380}
+  - component: {fileID: 460700444389517744}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -462,6 +463,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   playerColor: {r: 1, g: 1, b: 1, a: 0}
+  map: {fileID: 0}
+  currentCellBelowGridPos: {x: 0, y: 0}
   dashInput: 0
   isInteracting: 0
 --- !u!114 &2485145181930936751
@@ -477,6 +480,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foreground: {fileID: 940055682}
+  woodDisplay: {fileID: 0}
+  stoneDisplay: {fileID: 0}
+  resources: 
 --- !u!114 &5267556284120553380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,6 +549,21 @@ MonoBehaviour:
     m_RotationOrder: 4
   rotSpeed: 50
   flyHeight: 5
+--- !u!114 &460700444389517744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2485145182681316964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6394487270256b4eb30b3f64e1be280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPrefab: {fileID: 546959245547658020}
+  buildable: {fileID: 0}
+  nonBuildable: {fileID: 0}
 --- !u!1001 &816938620487657077
 PrefabInstance:
   m_ObjectHideFlags: 0

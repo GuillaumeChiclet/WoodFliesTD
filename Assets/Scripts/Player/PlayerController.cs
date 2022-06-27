@@ -64,7 +64,6 @@ public class PlayerController : MonoBehaviour
         {
             hitPoint = hit.point;
             map.TryGetCellFromWorldPos(hitPoint, out currentCellBelow);
-            int x = 0, y = 0;
             MapCoordinates.WorldToCellCoords(hitPoint, ref currentCellBelowGridPos);
         }
     }

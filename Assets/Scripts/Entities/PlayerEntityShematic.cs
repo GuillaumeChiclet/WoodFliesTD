@@ -62,12 +62,12 @@ public class PlayerEntityShematic : PlayerCellEntity, IInteractable
         map.ReplaceCellEntity(MapCoordinates.WorldToCellCoords(transform.position), "Turret", out CellEntity turret);
     }
 
-    public void PrimarAction(GameObject caller)
+    public override void PrimarAction(GameObject caller)
     {
         TryPay(caller.GetComponent<PlayerGather>());
     }
 
-    public void SecondAction(GameObject caller)
+    public override void SecondAction(GameObject caller)
     {
         throw new System.NotImplementedException();
     }

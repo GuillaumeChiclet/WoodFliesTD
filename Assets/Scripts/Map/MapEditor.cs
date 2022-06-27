@@ -32,7 +32,6 @@ public class MapEditor : MonoBehaviour
     AssetsManager assets;
     SaveLoadManager saveLoadManager;
 
-    bool panelOpen = true;
     bool isMouseDown = false;
 
     Vector2Int firstClic;
