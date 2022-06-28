@@ -72,7 +72,7 @@ public class MapEditor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isMouseDown && GetHoveredCellPosition(out Vector2Int cellCoord))
+        if (isMouseDown && GetHoveredCellPosition(out Vector2Int cellCoord))
         {
             if (editToggle.isOn)
             {
@@ -117,6 +117,7 @@ public class MapEditor : MonoBehaviour
 
     public void LoadMap()
     {
+        map.ClearToDefault();
         saveLoadManager.Load(saveName_inputField.text);
         map.UpdateMesh();
     }
@@ -146,14 +147,19 @@ public class MapEditor : MonoBehaviour
     }
     public void OnActivate(InputAction.CallbackContext context) => editPanel.SetActive(!editPanel.activeSelf);
 
-    public void OnMouseLeftButton(InputAction.CallbackContext context)
+    public void OnMouseLeftButtonPressed(InputAction.CallbackContext context)
     {
+        if (editPanel.activeSelf)
+            return;
+
+
         if (GetHoveredCellPosition(out Vector2Int cellCoord))
         {
-            if (context.ReadValueAsButton())
-            {
-                isMouseDown = true;
+            bool isPressed = context.action.IsPressed();
+            isMouseDown = !isMouseDown && isPressed;
 
+            if (isMouseDown)
+            {
                 if (waypointToggle.isOn)
                 {
                     if (map.data.waypointGraph.HasWaypoint(cellCoord))
@@ -189,21 +195,36 @@ public class MapEditor : MonoBehaviour
 
                 if (resourceEditToggle.isOn)
                 {
-                    if (!map.data.cells.TryGet(cellCoord.x, cellCoord.y, out Cell cell))
+                    if (!map.data.cells.TryGet(cellCoord, out Cell cell))
                         return;
 
-                    map.TrySpawnCellEntity(cellCoord.x, cellCoord.y, resource_dropdown.captionText.text, out CellEntity entity);
+                    if (cell.TryGetCellEntity(out CellEntity cellEntity))
+                        map.TryDestroyCellEntity(cellCoord);
+                    else
+                        map.TrySpawnCellEntity(cellCoord, resource_dropdown.captionText.text, out CellEntity entity);
                 }
             }
             else
             {
-                isMouseDown = false;
-
                 if (waypointLinkToggle.isOn)
                 {
                     secondClic = cellCoord;
                     map.data.waypointGraph.LinkOrUnlinkWaypoints(firstClic, secondClic);
                 }
+            }
+        }
+    }
+
+    public void OnMouseLeftButtonReleased(InputAction.CallbackContext context)
+    {
+        isMouseDown = false;
+
+        if (GetHoveredCellPosition(out Vector2Int cellCoord))
+        {
+            if (waypointLinkToggle.isOn)
+            {
+                secondClic = cellCoord;
+                map.data.waypointGraph.LinkOrUnlinkWaypoints(firstClic, secondClic);
             }
         }
     }
