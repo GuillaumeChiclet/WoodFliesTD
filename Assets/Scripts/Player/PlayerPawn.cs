@@ -70,11 +70,12 @@ public class PlayerPawn : MonoBehaviour
     private void UpdateMovement()
     {
         Vector3 velocityDir = rb.velocity;
+        Vector3 moveDir = Quaternion.AngleAxis(45, Vector3.up) * controller.MoveDirection;
 
-        float velocityDot = Vector3.Dot(controller.MoveDirection, velocityDir);
+        float velocityDot = Vector3.Dot(moveDir, velocityDir);
         float accel = acceleration * accelerationFactorFromDot.Evaluate(velocityDot);
 
-        Vector3 goalVel = controller.MoveDirection * drone.speed;
+        Vector3 goalVel = moveDir * drone.speed;
         goalVelocity = Vector3.MoveTowards(goalVelocity, goalVel, accel * Time.fixedDeltaTime);
 
         Vector3 neededAccel = (goalVelocity - rb.velocity) / Time.fixedDeltaTime;

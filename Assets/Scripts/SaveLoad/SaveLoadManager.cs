@@ -39,8 +39,18 @@ public class SaveLoadManager : MonoBehaviour
         assets = go.GetComponent<AssetsManager>();
         assets.Initialize();
 
-        Load("Level_00");
+
+        if (PlayerPrefs.HasKey("sceneName"))
+        {
+            Load(PlayerPrefs.GetString("sceneName"));
+        }
+        else
+        {
+            Load("Level_00");
+        }
     }
+
+    
 
     public void Load(string name)
     {

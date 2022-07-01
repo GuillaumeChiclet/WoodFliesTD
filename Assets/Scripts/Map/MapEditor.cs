@@ -24,6 +24,9 @@ public class MapEditor : MonoBehaviour
     public TMP_Text zoom_text;
     public TMP_InputField saveName_inputField;
     public TMP_Dropdown type_dropdown;
+    public GameObject spherePrefab;
+    public Material defaultMaterial;
+
 
     float currentCellHeight = 0.0f;
     float currentZoom = 10.0f;
@@ -37,6 +40,7 @@ public class MapEditor : MonoBehaviour
     Vector2Int firstClic;
     Vector2Int secondClic;
 
+    List<GameObject> waypointGO;
 
     void Start()
     {
@@ -58,6 +62,7 @@ public class MapEditor : MonoBehaviour
         }
         type_dropdown.AddOptions(names);
 
+        waypointGO = new List<GameObject>();
 
         resource_dropdown.ClearOptions();
         string[] tmp = new string[assets.resourceEntityPrefabs.Count];
@@ -67,6 +72,14 @@ public class MapEditor : MonoBehaviour
 
         currentCellHeight = map.cellTypes[type_dropdown.value].defaultHeight;
         height_text.text = (currentCellHeight.ToString());
+
+        currentZoom = cam.orthographicSize;
+        zoom_text.text = currentZoom.ToString();
+
+        if (PlayerPrefs.HasKey("sceneName"))
+        {
+            saveName_inputField.text = PlayerPrefs.GetString("sceneName");
+        }
     }
 
     // Update is called once per frame
@@ -127,6 +140,40 @@ public class MapEditor : MonoBehaviour
         map.UpdateMesh();
     }
 
+
+    void UpdateWaypointsGO()
+    {
+        if (!map)
+            return;
+
+        for (int i = 0; i < waypointGO.Count; i++)
+        {
+            Destroy(waypointGO[i]);
+        }
+        waypointGO.Clear();
+
+        for (int i = 0; i < map.data.waypointGraph.waypoints.Count; i++)
+        {
+            Waypoint wp = map.data.waypointGraph.waypoints[i];
+            map.data.cells.TryGet(wp.cellCoords.x, wp.cellCoords.y, out Cell cell);
+            GameObject go = Instantiate(spherePrefab, MapCoordinates.CellToWorldCoords(wp.cellCoords, cell.height), Quaternion.identity, transform);
+            waypointGO.Add(go);
+
+            for (int j = 0; j < wp.nextIndices.Count; j++)
+            {
+                Vector2Int coords = map.data.waypointGraph.waypoints[wp.nextIndices[j]].cellCoords;
+                LineRenderer line = go.AddComponent<LineRenderer>();
+                line.startWidth = .5f;
+                line.endWidth = .5f;
+                line.material = defaultMaterial;
+                Vector3[] points = new Vector3[2] { MapCoordinates.CellToWorldCoords(wp.cellCoords, cell.height), MapCoordinates.CellToWorldCoords(coords, cell.height) };
+                line.SetPositions(points);
+            }
+        }
+
+    }
+
+    /*
     private void OnDrawGizmos()
     {
         if (!map)
@@ -144,79 +191,90 @@ public class MapEditor : MonoBehaviour
                 Gizmos.DrawLine(MapCoordinates.CellToWorldCoords(wp.cellCoords, cell.height), MapCoordinates.CellToWorldCoords(coords, cell.height));
             }
         }
-    }
+    }*/
+
     public void OnActivate(InputAction.CallbackContext context) => editPanel.SetActive(!editPanel.activeSelf);
 
-    public void OnMouseLeftButtonPressed(InputAction.CallbackContext context)
+    public void OnMouseLeftButton(InputAction.CallbackContext context)
     {
         if (editPanel.activeSelf)
             return;
 
+        bool isPressed = context.action.IsPressed();
+
+        if (isPressed)
+        {
+            OnMouseLeftButtonPressed();
+        }
+        else
+        {
+            OnMouseLeftButtonReleased();
+        }
+    }
+
+
+    void OnMouseLeftButtonPressed()
+    {
+        if (isMouseDown)
+            return;
+
+        isMouseDown = true;
 
         if (GetHoveredCellPosition(out Vector2Int cellCoord))
         {
-            bool isPressed = context.action.IsPressed();
-            isMouseDown = !isMouseDown && isPressed;
-
-            if (isMouseDown)
+            if (waypointToggle.isOn)
             {
-                if (waypointToggle.isOn)
-                {
-                    if (map.data.waypointGraph.HasWaypoint(cellCoord))
-                        map.data.waypointGraph.RemoveWaypoint(cellCoord);
-                    else
-                        map.data.waypointGraph.AddWaypoint(cellCoord);
-                }
+                if (map.data.waypointGraph.HasWaypoint(cellCoord))
+                    map.data.waypointGraph.RemoveWaypoint(cellCoord);
+                else
+                    map.data.waypointGraph.AddWaypoint(cellCoord);
 
-                if (waypointLinkToggle.isOn)
-                {
-                    firstClic = cellCoord;
-                }
+                UpdateWaypointsGO();
+            }
 
-                if (waypointStartToggle.isOn)
-                {
-                    Waypoint wp = null;
-                    int idx = 0;
-                    if (map.data.waypointGraph.GetWaypoint(cellCoord, ref wp, ref idx))
-                    {
-                        map.data.waypointGraph.start = idx;
-                    }
-                }
+            if (waypointLinkToggle.isOn)
+            {
+                firstClic = cellCoord;
+            }
 
-                if (waypointEndToggle.isOn)
+            if (waypointStartToggle.isOn)
+            {
+                Waypoint wp = null;
+                int idx = 0;
+                if (map.data.waypointGraph.GetWaypoint(cellCoord, ref wp, ref idx))
                 {
-                    Waypoint wp = null;
-                    int idx = 0;
-                    if (map.data.waypointGraph.GetWaypoint(cellCoord, ref wp, ref idx))
-                    {
-                        map.data.waypointGraph.end = idx;
-                    }
-                }
-
-                if (resourceEditToggle.isOn)
-                {
-                    if (!map.data.cells.TryGet(cellCoord, out Cell cell))
-                        return;
-
-                    if (cell.TryGetCellEntity(out CellEntity cellEntity))
-                        map.TryDestroyCellEntity(cellCoord);
-                    else
-                        map.TrySpawnCellEntity(cellCoord, resource_dropdown.captionText.text, out CellEntity entity);
+                    map.data.waypointGraph.start = idx;
                 }
             }
-            else
+
+            if (waypointEndToggle.isOn)
             {
-                if (waypointLinkToggle.isOn)
+                Waypoint wp = null;
+                int idx = 0;
+                if (map.data.waypointGraph.GetWaypoint(cellCoord, ref wp, ref idx))
                 {
-                    secondClic = cellCoord;
-                    map.data.waypointGraph.LinkOrUnlinkWaypoints(firstClic, secondClic);
+                    map.data.waypointGraph.end = idx;
                 }
+            }
+
+            if (resourceEditToggle.isOn)
+            {
+                if (!map.data.cells.TryGet(cellCoord, out Cell cell))
+                    return;
+
+                if (cell.TryGetCellEntity(out CellEntity cellEntity))
+                    map.TryDestroyCellEntity(cellCoord);
+                else
+                    map.TrySpawnCellEntity(cellCoord, resource_dropdown.captionText.text, out CellEntity entity);
             }
         }
     }
 
-    public void OnMouseLeftButtonReleased(InputAction.CallbackContext context)
+    void OnMouseLeftButtonReleased()
     {
+        if (!isMouseDown)
+            return;
+
         isMouseDown = false;
 
         if (GetHoveredCellPosition(out Vector2Int cellCoord))
@@ -225,6 +283,8 @@ public class MapEditor : MonoBehaviour
             {
                 secondClic = cellCoord;
                 map.data.waypointGraph.LinkOrUnlinkWaypoints(firstClic, secondClic);
+
+                UpdateWaypointsGO();
             }
         }
     }
