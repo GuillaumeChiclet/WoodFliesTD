@@ -21,13 +21,13 @@ public class PlayerBuild : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        /*if (Input.GetKeyDown(KeyCode.B))
         {
             if (isBuilding)
                 EndBuild();
             else
                 BeginBuild();
-        }
+        }*/
         if (isBuilding) 
         {
             RefreshBuildPreview();

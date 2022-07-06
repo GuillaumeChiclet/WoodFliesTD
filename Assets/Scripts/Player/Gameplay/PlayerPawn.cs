@@ -35,16 +35,22 @@ public class PlayerPawn : MonoBehaviour
 
     //   MonoBehaviour Functions
 
-    private void Awake()
+    private void OnEnable()
     {
         model = Instantiate<GameObject>(drone.model, transform);
 
         rb = GetComponent<Rigidbody>();
-        
-        if(TryGetComponent<PlayerController>(out PlayerController cont))
+
+        if (TryGetComponent<PlayerController>(out PlayerController cont))
         {
             controller = cont;
         }
+    }
+
+    private void OnDisable()
+    {
+        if(model) Destroy(model);
+        if(rb)    Destroy(rb);
     }
 
     // Start is called before the first frame update

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[CreateAssetMenu(fileName = "Drone", menuName = "Drone", order = 1)]
+[CreateAssetMenu(fileName = "Drone", menuName = "Assets/Drone", order = 1)]
 public class ScriptableDrone : ScriptableObject
 {
     public float speed = 5.0f;

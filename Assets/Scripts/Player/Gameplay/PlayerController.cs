@@ -43,12 +43,10 @@ public class PlayerController : MonoBehaviour
     {
         //UpdateInputDir();
 
-        /*if (Input.GetKeyDown(KeyCode.E)) 
+        if (isInteracting) 
         {
             currentCellBelow.ownedEntity?.GetComponent<IInteractable>().PrimarAction(gameObject);
         }
-
-        dash = Input.GetKeyDown(KeyCode.Space);*/
     }
 
     private void FixedUpdate()
@@ -78,13 +76,6 @@ public class PlayerController : MonoBehaviour
         //decalTarget.transform.position = Vector3.MoveTowards(decalTarget.transform.position, new Vector3(x * MapCoordinates.unitSize, currentCellBelow.height, y * MapCoordinates.unitSize), Time.deltaTime * 5.0f);
         decalTarget.transform.position = new Vector3(x * MapCoordinates.unitSize, currentCellBelow.height + decalOffset, y * MapCoordinates.unitSize);
     }
-
-    /* void UpdateInputDir()
-     {
-         moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-         moveDirection = moveDirection.magnitude > 1.0f ? moveDirection.normalized : moveDirection;
-         moveDirection = Quaternion.AngleAxis(45, Vector3.up) * moveDirection;
-     }*/
 
     public void OnMove(InputAction.CallbackContext context)
     {
