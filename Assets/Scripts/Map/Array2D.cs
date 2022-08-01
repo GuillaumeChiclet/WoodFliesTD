@@ -39,7 +39,7 @@ public class Array2D<T> where T : new()
     {
         if (x < 0 || x >= width || y < 0 || y >= height)
         {
-            value = default(T);
+            value = default;
             return false;
         }
 

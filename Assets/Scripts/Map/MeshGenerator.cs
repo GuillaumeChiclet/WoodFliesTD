@@ -7,6 +7,7 @@ public static class MeshGenerator
     public static Mesh CreateMeshFromCells(ref Array2D<Cell> cells, int cellTypesNb, float unitSize = 1.0f)
     {
         Mesh mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
         List<Vector3> newVertices = new List<Vector3>();
         List<Vector2> newUVs = new List<Vector2>();

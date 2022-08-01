@@ -14,18 +14,15 @@ public class MapSaveData
 
 public class MapData
 {
-    public int width;
-    public int height;
-    public Array2D<Cell> cells;
-    public WaypointGraph waypointGraph;
+    public int width = 100;
+    public int height = 100;
+    public Array2D<Cell> cells = new Array2D<Cell>();
+    public WaypointGraph waypointGraph = new WaypointGraph();
 }
 
 [RequireComponent(typeof(MapDisplay))]
 public class Map : MonoBehaviour
 {
-    public int width = 100;
-    public int height = 100;
-
     public ScriptableCell[] cellTypes;
 
     MeshRenderer meshRenderer;
@@ -55,11 +52,20 @@ public class Map : MonoBehaviour
         display.DrawMesh(MeshGenerator.CreateMeshFromCells(ref data.cells, cellTypes.Length, MapCoordinates.unitSize), materials);
     }
 
-    public void Initialize()
+    public void Initialize(int width = 100, int height = 100)
     {
-        GameObject go = GameObject.Find("AssetsManager");
-        if (go)
-            assets = go.GetComponent<AssetsManager>();
+        if (!assets)
+        {
+            GameObject go = GameObject.Find("AssetsManager");
+            if (go) assets = go.GetComponent<AssetsManager>();
+        }
+        
+
+        if (data != null)
+        {
+            data.cells.Clear();
+            data.waypointGraph.waypoints.Clear();
+        }
 
         data = new MapData();
 
@@ -78,9 +84,9 @@ public class Map : MonoBehaviour
     public void ClearToDefault()
     {
         ScriptableCell cellType = cellTypes[0];
-        for (int j = 0; j < height; j++)
+        for (int j = 0; j < data.height; j++)
         {
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < data.width; i++)
             {
                 TryDestroyCellEntity(i, j);
                 data.cells.TrySet(i, j, new Cell { id = 0, height = cellType.defaultHeight, isBuildable = cellType.isBuildable });
@@ -104,9 +110,9 @@ public class Map : MonoBehaviour
         return data.cells.TryGet(x, y, out cell);
     }
 
-    public void SetCellFromID(int i, int j, int id, float height = -1)
+    public void SetCellFromID(int i, int j, int id, bool defaultHeight = true, float height = 0)
     {
-        float h = height >= 0.0f ? height : cellTypes[id].defaultHeight;
+        float h = defaultHeight ? cellTypes[id].defaultHeight : height;
         if (data.cells.TryGet(i, j, out Cell cell))
         {
             cell.height = h;
@@ -183,8 +189,8 @@ public class Map : MonoBehaviour
             CellEntity entity = cell.ownedEntity;
             if (entity)
             {
-                cell.CleanCellEntity();
                 Destroy(entity.gameObject);
+                cell.CleanCellEntity();
                 return true;
             }
         }

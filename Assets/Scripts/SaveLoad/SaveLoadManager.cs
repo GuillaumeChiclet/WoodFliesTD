@@ -7,6 +7,7 @@ using System.IO;
 public class CameraSaveData
 {
     public float orthographicSize;
+    public float height;
 }
 
 
@@ -66,6 +67,7 @@ public class SaveLoadManager : MonoBehaviour
         // Load everything back to same state
         map.LoadMapSaveData(gameSaveData.mapSaveData);
         cam.orthographicSize = gameSaveData.camSaveData.orthographicSize;
+        cam.transform.SetPositionAndRotation(Vector3.up * gameSaveData.camSaveData.height, Quaternion.Euler(45, 45, 0));
     }
 
     public void Save(string name)
@@ -73,7 +75,7 @@ public class SaveLoadManager : MonoBehaviour
         GameSaveData gameSaveData = new GameSaveData
         {
             mapSaveData = map.GetMapSaveData(),
-            camSaveData = new CameraSaveData { orthographicSize = cam.orthographicSize }
+            camSaveData = new CameraSaveData { orthographicSize = cam.orthographicSize, height = cam.transform.position.y }
         };
 
         string json = JsonUtility.ToJson(gameSaveData, true);

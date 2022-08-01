@@ -6,6 +6,19 @@ using UnityEngine.InputSystem;
 using TMPro;
 
 
+public enum EditMode
+{
+    None,
+    Cell,
+    Resource,
+    Building,
+    Waypoints,
+    WaypointsLink,
+    WaypointsStart,
+    WaypointsEnd
+}
+
+
 public class MapEditor : MonoBehaviour
 {
     public Camera cam;
@@ -13,27 +26,54 @@ public class MapEditor : MonoBehaviour
 
     [Header("UI")]
     public GameObject editPanel;
-    public Toggle editToggle;
+
+    [Header("Edit Toggles")]
+    public Toggle cellToggle;
+    public Toggle resourceToggle;
+    public Toggle buildingToggle;
     public Toggle waypointToggle;
     public Toggle waypointLinkToggle;
     public Toggle waypointStartToggle;
     public Toggle waypointEndToggle;
-    public Toggle resourceEditToggle;
+
+    [Header("Resources")]
     public TMP_Dropdown resource_dropdown;
-    public TMP_Text height_text;
-    public TMP_Text zoom_text;
-    public TMP_InputField saveName_inputField;
+
+    [Header("Cells")]
+    public TMP_InputField cellHeight_text;
+    public Slider cellHeight_slider;
     public TMP_Dropdown type_dropdown;
-    public GameObject spherePrefab;
-    public Material defaultMaterial;
+
+    [Header("Camera")]
+    //public TMP_Text cameraZoom_text;
+    public TMP_InputField cameraZoom_text;
+    public Slider cameraZoom_slider;
+    public TMP_InputField cameraHeight_text;
+    public Slider cameraHeight_slider;
+
+    [Header("Map")]
+    public TMP_InputField mapWidth_inputField;
+    public TMP_InputField mapHeight_inputField;
 
 
+    [Header("Load&Save")]
+    public TMP_InputField saveName_inputField;
+
+    [Header("Visuals Utils")]
+    public GameObject spherePrefab = null;
+    public Material defaultMaterial = null;
+
+
+    // Current Edit settings
+    EditMode currentEditMode = EditMode.None;
     float currentCellHeight = 0.0f;
-    float currentZoom = 10.0f;
+    float cameraZoom = 10.0f;
+    float cameraHeight = 10.0f;
 
-    Map map;
-    AssetsManager assets;
-    SaveLoadManager saveLoadManager;
+    // References to the map and managers
+    Map map = null;
+    AssetsManager assetsManager = null;
+    SaveLoadManager saveLoadManager = null;
 
     bool isMouseDown = false;
 
@@ -45,7 +85,7 @@ public class MapEditor : MonoBehaviour
     void Start()
     {
         GameObject goa = GameObject.Find("AssetsManager");
-        if (goa) assets = goa.GetComponent<AssetsManager>();
+        if (goa) assetsManager = goa.GetComponent<AssetsManager>();
 
         GameObject gos = GameObject.Find("SaveManager");
         if (gos) saveLoadManager = gos.GetComponent<SaveLoadManager>();
@@ -65,21 +105,28 @@ public class MapEditor : MonoBehaviour
         waypointGO = new List<GameObject>();
 
         resource_dropdown.ClearOptions();
-        string[] tmp = new string[assets.resourceEntityPrefabs.Count];
-        assets.resourceEntityPrefabs.Keys.CopyTo(tmp, 0);
+        string[] tmp = new string[assetsManager.resourceEntityPrefabs.Count];
+        assetsManager.resourceEntityPrefabs.Keys.CopyTo(tmp, 0);
         List<string> rNames = new List<string>(tmp);
         resource_dropdown.AddOptions(rNames);
 
         currentCellHeight = map.cellTypes[type_dropdown.value].defaultHeight;
-        height_text.text = (currentCellHeight.ToString());
+        cellHeight_text.text = (Get2Decimal(currentCellHeight).ToString());
+        cellHeight_slider.value = Get2Decimal(currentCellHeight);
 
-        currentZoom = cam.orthographicSize;
-        zoom_text.text = currentZoom.ToString();
+        cameraZoom = cam.orthographicSize;
+        cameraHeight = cam.transform.position.y;
+        cameraZoom_text.text = Get2Decimal(cameraZoom).ToString();
+        cameraHeight_text.text = Get2Decimal(cameraHeight).ToString();
+        cameraZoom_slider.value = Get2Decimal(cameraZoom);
+        cameraHeight_slider.value = Get2Decimal(cameraHeight);
 
         if (PlayerPrefs.HasKey("sceneName"))
         {
             saveName_inputField.text = PlayerPrefs.GetString("sceneName");
         }
+
+        UpdateWaypointsGO();
     }
 
     // Update is called once per frame
@@ -87,41 +134,138 @@ public class MapEditor : MonoBehaviour
     {
         if (isMouseDown && GetHoveredCellPosition(out Vector2Int cellCoord))
         {
-            if (editToggle.isOn)
+            if (cellToggle.isOn)
             {
-                map.SetCellFromID(cellCoord.x, cellCoord.y, type_dropdown.value, currentCellHeight);
+                map.SetCellFromID(cellCoord.x, cellCoord.y, type_dropdown.value, false, currentCellHeight);
                 map.UpdateMesh();
             }
         }
     }
 
-    public void SetCurrentType(int value)
+
+    public void CheckEditMode(bool value)
     {
-        SetCurrentHeight(map.cellTypes[value].defaultHeight);
+        if (!value)
+        {
+            currentEditMode = EditMode.None;
+            return;
+        }
+
+        switch (currentEditMode)
+        {
+            case EditMode.Cell:
+                cellToggle.isOn = false;
+                break;
+            case EditMode.Building:
+
+                break;
+            case EditMode.Resource:
+                resourceToggle.isOn = false;
+                break;
+            case EditMode.Waypoints:
+                waypointToggle.isOn = false;
+                break;
+            case EditMode.WaypointsLink:
+                waypointLinkToggle.isOn = false;
+                break;
+            case EditMode.WaypointsStart:
+                waypointStartToggle.isOn = false;
+                break;
+            case EditMode.WaypointsEnd:
+                waypointEndToggle.isOn = false;
+                break;
+            case EditMode.None:
+
+                break;
+            default:
+                break;
+        }
+
+        if (cellToggle.isOn) currentEditMode = EditMode.Cell;
+        else if (resourceToggle.isOn) currentEditMode = EditMode.Resource;
+        else if (waypointToggle.isOn) currentEditMode = EditMode.Waypoints;
+        else if (waypointLinkToggle.isOn) currentEditMode = EditMode.WaypointsLink;
+        else if (waypointStartToggle.isOn) currentEditMode = EditMode.WaypointsStart;
+        else if (waypointEndToggle.isOn) currentEditMode = EditMode.WaypointsEnd;
+        else currentEditMode = EditMode.None;
     }
 
-    public void SetCurrentHeight(float height)
+    /*
+    public void UpdateEditMode(EditMode editMode)
     {
-        currentCellHeight = height;
-        height_text.text = (currentCellHeight.ToString());
+        cellToggle.isOn = editMode == EditMode.Cell;
+        resourceToggle.isOn = editMode == EditMode.Resource;
+        waypointToggle.isOn = editMode == EditMode.Waypoints;
+        waypointLinkToggle.isOn = editMode == EditMode.WaypointsLink;
+        waypointStartToggle.isOn = editMode == EditMode.WaypointsStart;
+        waypointEndToggle.isOn = editMode == EditMode.WaypointsEnd;
+    }*/
+
+    public void Resize()
+    {
+        if (int.TryParse(mapWidth_inputField.text, out int width) && int.TryParse(mapHeight_inputField.text, out int height))
+        {
+            Debug.Log("Resizing with " + width.ToString() + " " + height.ToString());
+            map.Initialize(width, height);
+            map.UpdateMesh();
+        }
     }
 
-    public void ModifyCurrentHeight(float add)
+    public void SetCellType(int value)
     {
-        SetCurrentHeight(currentCellHeight + add);
+        SetCellHeight(map.cellTypes[value].defaultHeight);
     }
 
-    public void SetCurrentZoom(float zoom)
+    public void SetCellHeight(string value)
     {
-        currentZoom = zoom;
-        zoom_text.text = (currentZoom.ToString());
+        if (value == "") return;
+        if (value[value.Length - 1] == ',') return;
+        if (float.TryParse(value, out float height))
+        {
+            currentCellHeight = Get2Decimal(GetStep(height));
+            cellHeight_slider.SetValueWithoutNotify(currentCellHeight);
+        }
+    }
+    public void SetCellHeight(float height)
+    {
+        currentCellHeight = Get2Decimal(GetStep(height));
+        cellHeight_slider.SetValueWithoutNotify(currentCellHeight);
+        cellHeight_text.SetTextWithoutNotify(currentCellHeight.ToString());
+    }
+
+    public void SetCameraZoom(string value)
+    {
+        
+        if (value == "") return;
+        if (value[value.Length - 1] == '.') return;
+        if (float.TryParse(value.Replace(',', '.'), out float result))
+            SetCameraZoom(result);
+    }
+    public void SetCameraZoom(float zoom)
+    {
+        cameraZoom = Get2Decimal(GetStep(zoom));
+        cameraZoom_text.text = cameraZoom.ToString();
+        cameraZoom_slider.value = cameraZoom;
         cam.orthographicSize = zoom;
     }
 
-    public void ModifyCurrentZoom(float add)
+    public void SetCameraHeight(string value)
     {
-        SetCurrentZoom(currentZoom + add);
+        if (value == "") return;
+        if (value[value.Length - 1] == '.') return;
+        if (System.Single.TryParse(value.Replace(',', '.'), out float result))
+            SetCameraHeight(result);
     }
+    public void SetCameraHeight(float height)
+    {
+        cameraHeight = Get2Decimal(GetStep(height));
+        cameraHeight_text.text = cameraHeight.ToString();
+        cameraHeight_slider.value = cameraHeight;
+        Vector3 pos = cam.transform.position;
+        pos.y = cameraHeight;
+        cam.transform.position = pos;
+    }
+
 
     public void SaveMap()
     {
@@ -257,7 +401,7 @@ public class MapEditor : MonoBehaviour
                 }
             }
 
-            if (resourceEditToggle.isOn)
+            if (resourceToggle.isOn)
             {
                 if (!map.data.cells.TryGet(cellCoord, out Cell cell))
                     return;
@@ -309,5 +453,15 @@ public class MapEditor : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private float Get2Decimal(float value)
+    {
+        return (float)((int)(value * 100.0f)) / 100.0f;
+    }
+
+    private float GetStep(float value, float step = 0.25f)
+    {
+        return value - value % 0.25f;
     }
 }
