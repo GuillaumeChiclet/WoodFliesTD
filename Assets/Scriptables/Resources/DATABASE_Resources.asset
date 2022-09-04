@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b5c761032b380241a9c69dacb1da379, type: 3}
-  m_Name: ResourceList
-  m_EditorClassIdentifier: 
-  resources:
-  - {fileID: 11400000, guid: 04fad5c5b85d0c04ebf1eb1172eda6cc, type: 2}
+  m_Script: {fileID: 11500000, guid: 8b2f7e5410105f9409fc65d8722f1b75, type: 3}
+  m_Name: DATABASE_Resources
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceDataBase
+  list:
   - {fileID: 11400000, guid: 0913507e14ca9744da9d41a62cd40cd2, type: 2}
+  - {fileID: 11400000, guid: 04fad5c5b85d0c04ebf1eb1172eda6cc, type: 2}

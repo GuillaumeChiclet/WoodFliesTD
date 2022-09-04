@@ -333,7 +333,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afb2733e93ed489448f805926e98a1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  droneDatabase: {fileID: 11400000, guid: 5df5832e14ec6724f9e0a36d709a6937, type: 2}
+  DroneDatabase: {fileID: 11400000, guid: 5df5832e14ec6724f9e0a36d709a6937, type: 2}
+  CellTypeDatabase: {fileID: 11400000, guid: c0061172b5000e442a42164bf69fef62, type: 2}
+  ResourceDatabase: {fileID: 11400000, guid: 7149afb8cec05194ab01207668aa2ff0, type: 2}
 --- !u!1 &314793382
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,6 +910,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0

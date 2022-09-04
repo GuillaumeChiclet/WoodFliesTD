@@ -18,7 +18,7 @@ public class PlayerEntityShematic : PlayerCellEntity, IInteractable
 {
     Map map;
 
-    [SerializeField] ScriptableCostData data;
+    [SerializeField] ScriptableTower data;
     List<ResourceCost> resourcesPrice = new List<ResourceCost>();
 
     void FillResourcesCost() 

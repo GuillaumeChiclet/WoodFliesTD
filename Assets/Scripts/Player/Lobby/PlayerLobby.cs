@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-[RequireComponent(typeof(PlayerPawn))]
+//[RequireComponent(typeof(PlayerPawn))]
 public class PlayerLobby : MonoBehaviour
 {
-    PlayerPawn pawn;
+    //PlayerPawn pawn;
     ScriptableDrone currentDrone;
-    public int lobbyIndex = -1;
+    /*public int lobbyIndex = -1;
 
     private void Awake()
     {
@@ -18,7 +18,7 @@ public class PlayerLobby : MonoBehaviour
 
     public void ChangeDrone(InputAction.CallbackContext context)
     {
-        //PlayerConfigurationManager.Instance.
+       //PlayerConfigurationManager.Instance.
         if (context.started)
         {
             GameInstance.Instance.playerConfigs.ChangeDrone(lobbyIndex, (int)Mathf.Sign(context.ReadValue<float>()));
@@ -29,7 +29,7 @@ public class PlayerLobby : MonoBehaviour
     {
         if (context.started)
         {
-            pawn.drone = currentDrone;
+            //pawn.drone = currentDrone;
             GameInstance.Instance.playerConfigs.PlayerReady(lobbyIndex);
         }
     }
@@ -40,5 +40,5 @@ public class PlayerLobby : MonoBehaviour
         {
             GameInstance.Instance.playerConfigs.RemovePlayer(lobbyIndex);
         }
-    }
+    }*/
 }

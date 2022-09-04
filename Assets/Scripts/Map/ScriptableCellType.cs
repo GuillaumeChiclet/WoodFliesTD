@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CellType", menuName = "Map/Scriptable Cell", order = 0)]
-public class ScriptableCell : ScriptableObject
+[CreateAssetMenu(fileName = "New CellType", menuName = "Assets/Scriptable CellType", order = 0)]
+public class ScriptableCellType : ScriptableObject
 {
     public string typeName = "DefaultCell";
     public float defaultHeight = 0;

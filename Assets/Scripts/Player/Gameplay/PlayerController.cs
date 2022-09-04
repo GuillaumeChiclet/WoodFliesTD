@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     Vector3 moveDirection;
     public Color playerColor = Color.blue;
 
+    //  Cell marker
     public Map map = null;
     Cell currentCellBelow = null;
     public Vector2Int currentCellBelowGridPos;
@@ -33,9 +34,9 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        map = GameObject.Find("MapManager").GetComponent<Map>();
+        /*map = GameObject.Find("MapManager").GetComponent<Map>();
         Material decalMat = decalTarget.GetComponent<MeshRenderer>().material;
-        decalMat.color = playerColor;
+        decalMat.color = playerColor;*/
     }
 
     // Update is called once per frame
@@ -43,39 +44,57 @@ public class PlayerController : MonoBehaviour
     {
         //UpdateInputDir();
 
-        if (isInteracting) 
+        /*if (isInteracting) 
         {
             currentCellBelow.ownedEntity?.GetComponent<IInteractable>().PrimarAction(gameObject);
-        }
+        }*/
     }
 
     private void FixedUpdate()
     {
-        UpdateCellBelow();
-        UpdateDecalTarget();
+        //UpdateCellBelow();
+        //UpdateDecalTarget();
     }
 
     void UpdateCellBelow()
     {
-        bool touch = Physics.SphereCast(gameObject.transform.position, 0.1f, Vector3.down, out RaycastHit hit, 50, terrainLayerMask);
+        /*bool touch = Physics.SphereCast(gameObject.transform.position, 0.1f, Vector3.down, out RaycastHit hit, 50, terrainLayerMask);
         if (touch)
         {
             hitPoint = hit.point;
             map.TryGetCellFromWorldPos(hitPoint, out currentCellBelow);
             MapCoordinates.WorldToCellCoords(hitPoint, ref currentCellBelowGridPos);
-        }
+        }*/
     }
 
     void UpdateDecalTarget()
     {
-        if (currentCellBelow == null)
+        /*if (currentCellBelow == null)
             return;
 
         int x = 0, y = 0;
         MapCoordinates.WorldToCellCoords(hitPoint, ref x, ref y);
         //decalTarget.transform.position = Vector3.MoveTowards(decalTarget.transform.position, new Vector3(x * MapCoordinates.unitSize, currentCellBelow.height, y * MapCoordinates.unitSize), Time.deltaTime * 5.0f);
-        decalTarget.transform.position = new Vector3(x * MapCoordinates.unitSize, currentCellBelow.height + decalOffset, y * MapCoordinates.unitSize);
+        decalTarget.transform.position = new Vector3(x * MapCoordinates.unitSize, currentCellBelow.height + decalOffset, y * MapCoordinates.unitSize);*/
     }
+
+
+    public void ConstructPlayer(ScriptableDrone drone)
+    {
+        gameObject.SetActive(false);
+        PlayerPawn pawn = gameObject.AddComponent<PlayerPawn>();
+        pawn.drone = drone;
+
+        gameObject.SetActive(true);
+
+        //PlayerBuild builder = gameObject.AddComponent<PlayerBuild>();
+
+        PlayerGather gather = gameObject.AddComponent<PlayerGather>();
+
+
+    }
+
+    //  GAMEPLAY ACTIONS
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -86,4 +105,23 @@ public class PlayerController : MonoBehaviour
     public void OnDash(InputAction.CallbackContext context) => dashInput = context.ReadValue<float>();
     public void OnInteract(InputAction.CallbackContext context) => isInteracting = context.ReadValue<bool>();
 
+
+    //  LOBBY ACTIONS
+
+
+    public int lobbyIndex = -1;
+    public void OnDroneChange(InputAction.CallbackContext context)
+    {
+        if (context.started) GameInstance.Instance.playerConfigs.ChangeDrone(lobbyIndex, (int)Mathf.Sign(context.ReadValue<float>()));
+    }
+
+    public void OnGetReady(InputAction.CallbackContext context)
+    {
+        if (context.started) GameInstance.Instance.playerConfigs.PlayerReady(lobbyIndex);
+    }
+
+    public void OnLeave(InputAction.CallbackContext context)
+    {
+        if (context.started) GameInstance.Instance.playerConfigs.RemovePlayer(lobbyIndex);
+    }
 }

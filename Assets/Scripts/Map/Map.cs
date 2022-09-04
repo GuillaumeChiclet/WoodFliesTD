@@ -26,7 +26,7 @@ public class Map : MonoBehaviour
     public int width = 100;
     public int height = 100;
 
-    public ScriptableCell[] cellTypes;
+    public ScriptableCellType[] cellTypes;
 
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
@@ -77,7 +77,7 @@ public class Map : MonoBehaviour
 
     public void ClearToDefault()
     {
-        ScriptableCell cellType = cellTypes[0];
+        ScriptableCellType cellType = cellTypes[0];
         for (int j = 0; j < height; j++)
         {
             for (int i = 0; i < width; i++)

@@ -4,5 +4,7 @@ using UnityEngine;
 
 public class Database : MonoBehaviour
 {
-    public DroneDatabase droneDatabase;
+    public AssetDatabase<ScriptableDrone> DroneDatabase;
+    public AssetDatabase<ScriptableCellType>   CellTypeDatabase;
+    public AssetDatabase<ScriptableResource>   ResourceDatabase;
 }

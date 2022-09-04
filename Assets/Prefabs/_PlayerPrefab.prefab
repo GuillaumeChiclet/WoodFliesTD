@@ -60,6 +60,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -312,11 +313,7 @@ GameObject:
   - component: {fileID: 2485145182681316963}
   - component: {fileID: 2485145182681316960}
   - component: {fileID: 391528712654482633}
-  - component: {fileID: 2485145182681316961}
-  - component: {fileID: 2485145181930936751}
-  - component: {fileID: 5267556284120553380}
-  - component: {fileID: 460700444389517744}
-  - component: {fileID: 8911249998477417723}
+  - component: {fileID: 4282171673167756455}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -396,7 +393,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2485145182681316961}
+      - m_Target: {fileID: 4282171673167756455}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -412,7 +409,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2485145182681316961}
+      - m_Target: {fileID: 4282171673167756455}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: OnDash
         m_Mode: 0
@@ -428,7 +425,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/Dash[/Keyboard/space]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2485145182681316961}
+      - m_Target: {fileID: 4282171673167756455}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: OnInteract
         m_Mode: 0
@@ -444,10 +441,10 @@ MonoBehaviour:
     m_ActionName: Gameplay/Interact[/Keyboard/f]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8911249998477417723}
-        m_TargetAssemblyTypeName: PlayerLobby, Assembly-CSharp
-        m_MethodName: GetReady
-        m_Mode: 1
+      - m_Target: {fileID: 4282171673167756455}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnGetReady
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -460,9 +457,9 @@ MonoBehaviour:
     m_ActionName: Lobby/Ready[/Keyboard/e]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8911249998477417723}
-        m_TargetAssemblyTypeName: PlayerLobby, Assembly-CSharp
-        m_MethodName: ChangeDrone
+      - m_Target: {fileID: 4282171673167756455}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnDroneChange
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -476,10 +473,10 @@ MonoBehaviour:
     m_ActionName: Lobby/Change[/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8911249998477417723}
-        m_TargetAssemblyTypeName: PlayerLobby, Assembly-CSharp
-        m_MethodName: Leave
-        m_Mode: 1
+      - m_Target: {fileID: 4282171673167756455}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnLeave
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -495,7 +492,7 @@ MonoBehaviour:
   m_DefaultActionMap: Lobby
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &2485145182681316961
+--- !u!114 &4282171673167756455
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -507,130 +504,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c90a947b22ba48c4881b99ceb1278039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  decalTarget: {fileID: 546959245547658020}
+  decalTarget: {fileID: 0}
   terrainLayerMask:
     serializedVersion: 2
-    m_Bits: 128
-  playerColor: {r: 1, g: 1, b: 1, a: 0}
+    m_Bits: 0
+  playerColor: {r: 0, g: 0, b: 1, a: 1}
   map: {fileID: 0}
   currentCellBelowGridPos: {x: 0, y: 0}
   dashInput: 0
   isInteracting: 0
---- !u!114 &2485145181930936751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2485145182681316964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11b38693e5e02ab4897d5d7091d05bc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foreground: {fileID: 940055682}
-  woodDisplay: {fileID: 0}
-  stoneDisplay: {fileID: 0}
-  resources: 
---- !u!114 &5267556284120553380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2485145182681316964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8293e6e37a866b4496f8b561d07449c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drone: {fileID: 11400000, guid: de7e24aac19770b4eab3acfcd34ccd21, type: 2}
-  moveSpeed: 5
-  acceleration: 100
-  maxAcceleration: 250
-  accelerationFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.0041656494
-      value: 0.49954224
-      inSlope: 0.26185977
-      outSlope: 0.26185977
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.2384945
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0.81900674
-      outSlope: 0.81900674
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.12133879
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxAccelerationFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.0041656494
-      value: 0.49954224
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  rotSpeed: 50
-  flyHeight: 5
---- !u!114 &460700444389517744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2485145182681316964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6394487270256b4eb30b3f64e1be280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 546959245547658020}
-  buildable: {fileID: 0}
-  nonBuildable: {fileID: 0}
---- !u!114 &8911249998477417723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2485145182681316964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bbffc7077a101840b3c40d6a2b3f132, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   lobbyIndex: -1
 --- !u!1001 &816938620487657077
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 2485145182432462594}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: b9734e5be07d25a4db908c78b734c2bc, type: 3}
@@ -702,12 +591,8 @@ PrefabInstance:
       value: CellTarget
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: b9734e5be07d25a4db908c78b734c2bc, type: 3}
---- !u!1 &546959245547658020 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b9734e5be07d25a4db908c78b734c2bc, type: 3}
-  m_PrefabInstance: {fileID: 816938620487657077}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &926862075732132254 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b9734e5be07d25a4db908c78b734c2bc, type: 3}

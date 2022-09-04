@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Turret", menuName = "Turrets/Scriptable Turret Data", order = 0)]
-public class ScriptableCostData : ScriptableObject
+[CreateAssetMenu(fileName = "New Tower", menuName = "Assets/Scriptable Tower", order = 0)]
+public class ScriptableTower : ScriptableObject
 {
     public List<ScriptableResource> resourceList;
     public List<int>                resourceListCost;

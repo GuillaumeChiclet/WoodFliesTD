@@ -5,18 +5,12 @@ using UnityEngine;
 public class LobbySlot : MonoBehaviour
 {
     private int droneIndex = 0;
-    private DroneDatabase droneDatabase;
+    private AssetDatabase<ScriptableDrone> DroneDatabase;
 
     private GameObject preview;
 
-    void Start()
-    {
-        droneDatabase = GameInstance.Instance.database.droneDatabase;
-    }
-
     void OnEnable()
     {
-        Debug.Log("Slot Enabled");
         ChangeDronePreview();
     }
 
@@ -28,20 +22,18 @@ public class LobbySlot : MonoBehaviour
 
     private void ChangeDronePreview()
     {
-        if(preview) Destroy(preview);
-
-        preview = Instantiate(droneDatabase.allDrones[droneIndex].model, transform);
+        if (preview) Destroy(preview);
+        preview = Instantiate(GameInstance.Instance.database.DroneDatabase.list[droneIndex].model, transform);
     }
 
     public void ChangeCurrentDrone(int direction)
     {
-        droneIndex = (int)Mathf.Repeat(droneIndex + direction, droneDatabase.allDrones.Count);
-        Debug.Log(direction + " value -> " + droneIndex);
+        droneIndex = (int)Mathf.Repeat(droneIndex + direction, GameInstance.Instance.database.DroneDatabase.list.Count);
         ChangeDronePreview();
     }
 
     public ScriptableDrone GetCurrentDrone()
     {
-        return droneDatabase.allDrones[droneIndex];
+        return GameInstance.Instance.database.DroneDatabase.list[droneIndex];
     }
 }

@@ -33,15 +33,22 @@ public class PlayerConfigurationManager : MonoBehaviour
         playerConfig[index].IsReady = true;
         playerConfig[index].Drone = slots[index].GetCurrentDrone();
 
-        if (playerConfig.Count <= inputsManager.maxPlayerCount && playerConfig.TrueForAll(p => p.IsReady))
+        if (playerConfig.Count > 0 && playerConfig.Count <= inputsManager.maxPlayerCount && playerConfig.TrueForAll(p => p.IsReady))
         {
             inputsManager.DisableJoining();
             
             Debug.Log("All Players are ready");
 
             playerConfig.ForEach(p => p.Input.SwitchCurrentActionMap("Gameplay"));
+
+            ConstructPlayers();
             //  Start ?
         }
+    }
+
+    public void ConstructPlayers()
+    {
+        playerConfig.ForEach(p => p.Input.gameObject.GetComponent<PlayerController>().ConstructPlayer(p.Drone));
     }
 
     public void HandlePlayerJoin(PlayerInput playerInput)
@@ -57,7 +64,7 @@ public class PlayerConfigurationManager : MonoBehaviour
     public void AddPlayer(PlayerInput playerInput)
     {
         playerInput.transform.SetParent(transform);
-        playerInput.gameObject.GetComponent<PlayerLobby>().lobbyIndex = playerConfig.Count;
+        playerInput.gameObject.GetComponent<PlayerController>().lobbyIndex = playerConfig.Count;
         slots[playerConfig.Count].enabled = true;
 
         playerConfig.Add(new PlayerConfiguration(playerInput));
@@ -73,10 +80,10 @@ public class PlayerConfigurationManager : MonoBehaviour
         int current = 0;
         foreach(PlayerConfiguration pc in playerConfig)
         {
-            PlayerLobby playerLobby = pc.Input.gameObject.GetComponent<PlayerLobby>();
+            PlayerController controller = pc.Input.gameObject.GetComponent<PlayerController>();
 
-            if (playerLobby.lobbyIndex == current) continue;
-            playerLobby.lobbyIndex = current;
+            if (controller.lobbyIndex == current) continue;
+            controller.lobbyIndex = current;
 
             current++;
         }
