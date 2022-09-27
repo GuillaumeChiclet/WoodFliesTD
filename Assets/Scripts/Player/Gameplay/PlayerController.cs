@@ -29,7 +29,14 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public bool isInteracting;
 
+    PlayerInput inputs;
+
     public Vector3 MoveDirection {get { return moveDirection; } }
+
+    private void Awake()
+    {
+        inputs = GetComponent<PlayerInput>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -81,17 +88,12 @@ public class PlayerController : MonoBehaviour
 
     public void ConstructPlayer(ScriptableDrone drone)
     {
-        gameObject.SetActive(false);
-        PlayerPawn pawn = gameObject.AddComponent<PlayerPawn>();
+
+        PlayerPawn pawn = gameObject.GetComponent<PlayerPawn>();
         pawn.drone = drone;
+        pawn.enabled = true;
 
-        gameObject.SetActive(true);
-
-        //PlayerBuild builder = gameObject.AddComponent<PlayerBuild>();
-
-        PlayerGather gather = gameObject.AddComponent<PlayerGather>();
-
-
+        inputs.SwitchCurrentActionMap("Gameplay");
     }
 
     //  GAMEPLAY ACTIONS

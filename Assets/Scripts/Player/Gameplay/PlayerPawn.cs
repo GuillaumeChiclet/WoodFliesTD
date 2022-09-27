@@ -35,6 +35,11 @@ public class PlayerPawn : MonoBehaviour
 
     //   MonoBehaviour Functions
 
+    private void Awake()
+    {
+        
+    }
+
     private void OnEnable()
     {
         model = Instantiate<GameObject>(drone.model, transform);
@@ -85,7 +90,7 @@ public class PlayerPawn : MonoBehaviour
         goalVelocity = Vector3.MoveTowards(goalVelocity, goalVel, accel * Time.fixedDeltaTime);
 
         Vector3 neededAccel = (goalVelocity - rb.velocity) / Time.fixedDeltaTime;
-        float maxAccel = maxAcceleration * maxAccelerationFactorFromDot.Evaluate(velocityDot);
+        float maxAccel = maxAcceleration *  maxAccelerationFactorFromDot.Evaluate(velocityDot);
         neededAccel = Vector3.ClampMagnitude(neededAccel, maxAccel);
 
         Vector3 neededForce = neededAccel * rb.mass;

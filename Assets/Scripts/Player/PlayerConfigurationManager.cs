@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerInputManager))]
@@ -14,18 +15,8 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     private void Awake()
     {
-        //if(Instance != null)
-        //{
-        //    Debug.LogWarning("Trying to create another instance of singleton !");
-        //}
-        //else
-        //{
-        //    Instance = this;
-        //    DontDestroyOnLoad(Instance);
-
-            inputsManager = GetComponent<PlayerInputManager>();
-            playerConfig  = new List<PlayerConfiguration>();
-        //}
+        inputsManager = GetComponent<PlayerInputManager>();
+        playerConfig = new List<PlayerConfiguration>();
     }
 
     public void PlayerReady(int index)
@@ -33,16 +24,20 @@ public class PlayerConfigurationManager : MonoBehaviour
         playerConfig[index].IsReady = true;
         playerConfig[index].Drone = slots[index].GetCurrentDrone();
 
+        //  Make the player don't destroy on load
+        playerConfig[index].Input.transform.SetParent(transform);
+
         if (playerConfig.Count > 0 && playerConfig.Count <= inputsManager.maxPlayerCount && playerConfig.TrueForAll(p => p.IsReady))
         {
             inputsManager.DisableJoining();
-            
+
+            playerConfig.ForEach(p => { p.Input.SwitchCurrentActionMap("Gameplay"); Debug.Log(p.Input.currentActionMap.ToString()); });
             Debug.Log("All Players are ready");
 
-            playerConfig.ForEach(p => p.Input.SwitchCurrentActionMap("Gameplay"));
-
             ConstructPlayers();
+
             //  Start ?
+            SceneManager.LoadScene("GAME");
         }
     }
 
@@ -53,6 +48,7 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     public void HandlePlayerJoin(PlayerInput playerInput)
     {
+        //  Avoid player duplications
         if (!playerConfig.Exists(p => p.PlayerIndex == playerInput.playerIndex))
         {
             Debug.Log("Player \"" + playerInput.playerIndex + "\" joined");
@@ -63,12 +59,10 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     public void AddPlayer(PlayerInput playerInput)
     {
-        playerInput.transform.SetParent(transform);
         playerInput.gameObject.GetComponent<PlayerController>().lobbyIndex = playerConfig.Count;
         slots[playerConfig.Count].enabled = true;
 
         playerConfig.Add(new PlayerConfiguration(playerInput));
-
     }
 
     public void RemovePlayer(int index)
@@ -91,7 +85,6 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     public void ChangeDrone(int index, int direction)
     {
-        Debug.Log("Switch drone");
         slots[index].ChangeCurrentDrone(direction);
         //  switch List of drone here
     }
@@ -104,6 +97,8 @@ public class PlayerConfiguration
 {
     public PlayerConfiguration(PlayerInput playerInput)
     {
+        Debug.Log(playerInput.playerIndex + "joined");
+
         PlayerIndex = playerInput.playerIndex;
         Input = playerInput;
 
