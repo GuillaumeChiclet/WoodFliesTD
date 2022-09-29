@@ -18,10 +18,12 @@ public class MapDisplay : MonoBehaviour
 		meshCollider = GetComponent<MeshCollider>();
 	}
 
-    public void DrawMesh(Mesh mesh, Material[] materials)
+	public void DrawMesh(Mesh mesh, Material[] materials)
 	{
 		meshFilter.sharedMesh = mesh;
 		meshCollider.sharedMesh = mesh;
 		meshRenderer.sharedMaterials = materials;
+
+		GameInstance.Instance.MapGenerated();
 	}
 }

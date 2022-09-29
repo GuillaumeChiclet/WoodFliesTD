@@ -55,7 +55,7 @@ public class PlayerPawn : MonoBehaviour
     private void OnDisable()
     {
         if(model) Destroy(model);
-        if(rb)    Destroy(rb);
+        //if(rb)    Destroy(rb);
     }
 
     // Start is called before the first frame update

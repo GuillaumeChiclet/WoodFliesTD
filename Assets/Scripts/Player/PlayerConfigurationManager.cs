@@ -88,6 +88,15 @@ public class PlayerConfigurationManager : MonoBehaviour
         slots[index].ChangeCurrentDrone(direction);
         //  switch List of drone here
     }
+
+    public List<GameObject> GetPlayersObjects()
+    {
+        List<GameObject> players = new List<GameObject>();
+
+        playerConfig.ForEach(p => players.Add(p.Input.gameObject));
+
+        return players;
+    }
 }
 
 

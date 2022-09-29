@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DefaultDrone
   m_EditorClassIdentifier: 
   speed: 5
-  dashpower: 80
-  dashCooldown: 0.25
-  dashMaxDuration: 0.25
+  dashpower: 50
+  dashCooldown: 0.2
+  dashMaxDuration: 0.15
   extractionEfficiency: 1.1
   craftingEfficiency: 1
   itemSlot: 3

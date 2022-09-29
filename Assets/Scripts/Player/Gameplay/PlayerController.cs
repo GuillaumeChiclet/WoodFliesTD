@@ -5,23 +5,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Model")]
-    public GameObject decalTarget;
-    private float decalOffset = 0.1f;
-
-    [Header("Layers")]
-    public LayerMask terrainLayerMask;
+    //  VARIABLES
 
     Vector3 moveDirection;
-    public Color playerColor = Color.blue;
+    public Color playerColor { get; private set; } = Color.blue;
 
-    //  Cell marker
-    public Map map = null;
-    Cell currentCellBelow = null;
-    public Vector2Int currentCellBelowGridPos;
-
-    public Cell CurrentCellBelow => currentCellBelow;
-    Vector3 hitPoint;
 
     [HideInInspector]
     public float dashInput;
@@ -33,62 +21,27 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 MoveDirection {get { return moveDirection; } }
 
+    //  MONOBEHAVIOUR FUNCTIONS
+
     private void Awake()
     {
         inputs = GetComponent<PlayerInput>();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        /*map = GameObject.Find("MapManager").GetComponent<Map>();
-        Material decalMat = decalTarget.GetComponent<MeshRenderer>().material;
-        decalMat.color = playerColor;*/
+        GameInstance.Instance.OnGameStart.AddListener(OnGameStart);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        //UpdateInputDir();
-
-        /*if (isInteracting) 
-        {
-            currentCellBelow.ownedEntity?.GetComponent<IInteractable>().PrimarAction(gameObject);
-        }*/
+        GameInstance.Instance.OnGameStart.RemoveListener(OnGameStart);
     }
 
-    private void FixedUpdate()
-    {
-        //UpdateCellBelow();
-        //UpdateDecalTarget();
-    }
-
-    void UpdateCellBelow()
-    {
-        /*bool touch = Physics.SphereCast(gameObject.transform.position, 0.1f, Vector3.down, out RaycastHit hit, 50, terrainLayerMask);
-        if (touch)
-        {
-            hitPoint = hit.point;
-            map.TryGetCellFromWorldPos(hitPoint, out currentCellBelow);
-            MapCoordinates.WorldToCellCoords(hitPoint, ref currentCellBelowGridPos);
-        }*/
-    }
-
-    void UpdateDecalTarget()
-    {
-        /*if (currentCellBelow == null)
-            return;
-
-        int x = 0, y = 0;
-        MapCoordinates.WorldToCellCoords(hitPoint, ref x, ref y);
-        //decalTarget.transform.position = Vector3.MoveTowards(decalTarget.transform.position, new Vector3(x * MapCoordinates.unitSize, currentCellBelow.height, y * MapCoordinates.unitSize), Time.deltaTime * 5.0f);
-        decalTarget.transform.position = new Vector3(x * MapCoordinates.unitSize, currentCellBelow.height + decalOffset, y * MapCoordinates.unitSize);*/
-    }
-
+    //  FUNCTIONS
 
     public void ConstructPlayer(ScriptableDrone drone)
     {
-
         PlayerPawn pawn = gameObject.GetComponent<PlayerPawn>();
         pawn.drone = drone;
         pawn.enabled = true;
@@ -125,5 +78,12 @@ public class PlayerController : MonoBehaviour
     public void OnLeave(InputAction.CallbackContext context)
     {
         if (context.started) GameInstance.Instance.playerConfigs.RemovePlayer(lobbyIndex);
+    }
+
+    //  OTHER EVENT FUNCTIONS
+
+    private void OnGameStart()
+    {
+        if (TryGetComponent(out PlayerDecal decal)) decal.enabled = true;
     }
 }

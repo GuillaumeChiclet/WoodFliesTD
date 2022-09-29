@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerConfigurationManager))]
@@ -9,6 +10,7 @@ public class GameInstance : MonoBehaviour
     public PlayerConfigurationManager playerConfigs;
 
     public Database database;
+    public UnityEvent OnGameStart;
 
     public static GameInstance Instance { get; private set; }
 
@@ -31,5 +33,10 @@ public class GameInstance : MonoBehaviour
     {
         database      = GetComponent<Database>();
         playerConfigs = GetComponent<PlayerConfigurationManager>();
+    }
+
+    public void MapGenerated()
+    {
+        OnGameStart.Invoke();
     }
 }

@@ -930,6 +930,7 @@ GameObject:
   - component: {fileID: 2485145181930936751}
   - component: {fileID: 8715627069411564011}
   - component: {fileID: 3092865434456836805}
+  - component: {fileID: 3980951024567437984}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -997,13 +998,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c90a947b22ba48c4881b99ceb1278039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  decalTarget: {fileID: 2485145182284113300}
-  terrainLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  playerColor: {r: 0, g: 0, b: 1, a: 1}
-  map: {fileID: 0}
-  currentCellBelowGridPos: {x: 0, y: 0}
   dashInput: 0
   isInteracting: 0
   lobbyIndex: -1
@@ -1104,6 +1098,21 @@ MonoBehaviour:
   buildingPrefab: {fileID: 0}
   buildable: {fileID: 0}
   nonBuildable: {fileID: 0}
+--- !u!114 &3980951024567437984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2485145182681316964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dad2546c251696d43828cf55e01406dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decalModel: {fileID: 0}
+  map: {fileID: 0}
+  currentCellBelowGridPos: {x: 0, y: 0}
 --- !u!1001 &2485145181624755984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1170,6 +1179,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 080f3458a30602d4ea8af75b5641126a, type: 3}
       propertyPath: m_Name
       value: Drones
+      objectReference: {fileID: 0}
+    - target: {fileID: 956396864413111373, guid: 080f3458a30602d4ea8af75b5641126a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080f3458a30602d4ea8af75b5641126a, type: 3}

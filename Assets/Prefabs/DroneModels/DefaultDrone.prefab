@@ -65,7 +65,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 080f3458a30602d4ea8af75b5641126a, type: 3}
       propertyPath: m_Name
-      value: Drones
+      value: DefaultDrone
+      objectReference: {fileID: 0}
+    - target: {fileID: 956396864413111373, guid: 080f3458a30602d4ea8af75b5641126a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080f3458a30602d4ea8af75b5641126a, type: 3}

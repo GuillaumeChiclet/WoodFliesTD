@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(PlayerDecal))]
 public class PlayerBuild : MonoBehaviour
 {
     bool isBuilding = false;
 
     GameObject buildPreview = null;
 
-    PlayerController controller;
+    PlayerController cont;
+    PlayerDecal decal;
 
     [SerializeField] GameObject buildingPrefab;
 
@@ -17,7 +20,8 @@ public class PlayerBuild : MonoBehaviour
 
     private void Start()
     {
-        controller = GetComponentInChildren<PlayerController>();
+        cont = GetComponent<PlayerController>();
+        decal = GetComponent<PlayerDecal>();
     }
     void Update()
     {
@@ -50,7 +54,7 @@ public class PlayerBuild : MonoBehaviour
 
     void TryBuild() 
     {
-        if (!controller.CurrentCellBelow.isBuildable)
+        if (!decal.CurrentCellBelow.isBuildable)
             return;
 
         PlaceShematic();
@@ -59,7 +63,7 @@ public class PlayerBuild : MonoBehaviour
 
     void PlaceShematic() 
     {
-        controller.map.TrySpawnCellEntity(controller.currentCellBelowGridPos, "Shematic", out CellEntity entity);
+        decal.map.TrySpawnCellEntity(decal.currentCellBelowGridPos, "Shematic", out CellEntity entity);
         EndBuild();
     }
 
@@ -77,8 +81,8 @@ public class PlayerBuild : MonoBehaviour
 
         Renderer[] renderers = buildPreview.GetComponentsInChildren<Renderer>();
         foreach (Renderer renderer in renderers) 
-            renderer.material = controller.CurrentCellBelow.canBuild ? buildable : nonBuildable;
+            renderer.material = decal.CurrentCellBelow.canBuild ? buildable : nonBuildable;
 
-        buildPreview.transform.position = MapCoordinates.CellToWorldCoords(controller.currentCellBelowGridPos);
+        buildPreview.transform.position = MapCoordinates.CellToWorldCoords(decal.currentCellBelowGridPos);
     }
 }

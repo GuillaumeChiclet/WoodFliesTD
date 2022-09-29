@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Resources : MonoBehaviour
 {
-    
     public ResourceHandler resourceList;
     public static ResourceHandler handler;
 
