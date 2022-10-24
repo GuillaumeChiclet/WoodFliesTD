@@ -39,7 +39,15 @@ public class Map : MonoBehaviour
     private void Awake()
     {
         display = GetComponent<MapDisplay>();
-        
+        GameInstance.Instance.currentMap = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameInstance.Instance.currentMap == this)
+        {
+            GameInstance.Instance.currentMap = null;
+        }
     }
 
     private void Start()
@@ -242,5 +250,20 @@ public class Map : MonoBehaviour
             waypointGraph = data.waypointGraph,
         };
         
+    }
+
+
+    public Vector3 GetMapDimensions()
+    {
+        return new Vector3(
+            width * MapCoordinates.unitSize,
+            0.0f,
+            height * MapCoordinates.unitSize
+        );
+    }
+
+    public Vector3 GetMapCenter()
+    {
+        return GetMapDimensions() * 0.5f;
     }
 }

@@ -124864,6 +124864,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2366057854225761082, guid: 7f2ef42a8304a3743a92da3d080f7cec, type: 3}
+      propertyPath: width
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2366057854225761082, guid: 7f2ef42a8304a3743a92da3d080f7cec, type: 3}
+      propertyPath: height
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 2366057854225761083, guid: 7f2ef42a8304a3743a92da3d080f7cec, type: 3}
       propertyPath: m_Name
       value: MapManager

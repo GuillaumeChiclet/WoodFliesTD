@@ -10,7 +10,10 @@ public class GameInstance : MonoBehaviour
     public PlayerConfigurationManager playerConfigs;
 
     public Database database;
+    public Map currentMap;
+
     public UnityEvent OnGameStart;
+
 
     public static GameInstance Instance { get; private set; }
 

@@ -14,12 +14,17 @@ public class MutlipleCameraTarget : MonoBehaviour
     [SerializeField] private float m_zoomFactor = 0.6f;
     [SerializeField] private float m_zoom = 1f;
 
+    private Vector3 m_mapCenter;
 
     void Awake()
     {
         players = GameInstance.Instance.playerConfigs.GetPlayersObjects();
     }
 
+    private void Start()
+    {
+        m_mapCenter = GameInstance.Instance.currentMap.GetMapCenter();
+    }
 
     void Update()
     {
@@ -45,6 +50,7 @@ public class MutlipleCameraTarget : MonoBehaviour
         }
 
         m_zoom = maxDist;
-        m_targetPosition = posSum / players.Count;
+
+        m_targetPosition = ((posSum / players.Count) + m_mapCenter) * 0.5f;
     }
 }
